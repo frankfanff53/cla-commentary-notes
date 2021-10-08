@@ -1,0 +1,42 @@
+In computational linear algebra, we would spend a lot of time in matrix equations or expressions like $Ax = b$. However, for large matrices  $A$, it is always difficult and inefficient to find the value of $x$, if we try finding the inverse of $A$ directly. So what we want to do is to "transform" our $A$ into smaller building blocks with specific properties, and use the properties of them to make the equation easier to solve. 
+
+\medskip
+\noindent The transformations, should preserve the correctness in matrix calculations (be sufficiently free from truncation errors, as said in the \textbf{Introduction of Chapter 2, master notes}), and be efficient enough to perform. Here, let us talk about the very first transformation, the \textbf{QR Factorisation}. 
+
+\section{QR Factorisation Concept}%
+What does \textbf{QR Factorisation} do is to simply decompose an arbitrary matrix $A$, to a unitary matrix $Q$ and an upper triangular matrix $R$. 
+i.e. to  write
+\[
+  A = QR \text{ where } A \in \mathbb{C}^{m\times n}, Q  \text{ unitary } \in \mathbb{C}^{m \times m}, R  \text{ upper triangular } \in \mathbb{C}^{m \times n}
+.\]
+And without loss of generality we consider $m > n$, and have:
+\[
+\underset{\begin{array}{c}\\ A \end{array}}%
+{
+\begin{pmatrix}
+  a_{11} & a_{12} & \ldots & a_{1n} \\
+  a_{21} & a_{22} & \ldots & a_{2n} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  a_{m1} & a_{m2} & \ldots & a_{mn}
+\end{pmatrix}
+}
+=
+\underset{\begin{array}{c}\\ Q \end{array}}%
+{
+\begin{pmatrix}
+  q_{11} & q_{12} & \ldots & q_{1n} & \ldots & q_{1m} \\
+  q_{21} & q_{22} & \ldots & q_{2n} & \ldots & q_{2m}\\
+  \vdots & \vdots & \ddots & \vdots & \ddots & \vdots\\
+  q_{m1} & q_{m2} & \ldots & q_{mn} & \ldots & q_{mm}
+\end{pmatrix}
+}
+\begin{spmatrix}{R}
+  r_{11} & r_{12} & \ldots & r_{1n} \\
+  0 & r_{22} & \ldots & r_{2n} \\
+  0 & 0 & \ldots & r_{3n} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  0 & 0 & \ldots & r_{nn} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  0 & 0 & \ldots & 0
+\end{spmatrix}
+\] 
