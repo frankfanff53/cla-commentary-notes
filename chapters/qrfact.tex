@@ -74,4 +74,22 @@ U^{\bot} = \{x \in \mathbb{C}^{m}: \forall u \in U, x^{*}u = 0\}
 \label{ssub:code_implementation}
 \lstinputlisting[language=Python, firstline=61, lastline=72]{./python/exercise2.py}
 
+\subsubsection*{Analysis}%
+\label{ssub:analysis}
+Here we have some explanation to this implementation:
+\begin{itemize}
+\item Given that we know $Q$ is unitary, we would see all column vectors are orthogonal to each other by expanding
+  \[
+    [Q^*Q]_{ij} = q_i^*q_j = I_{ij} = \left\{
+      \begin{array}{l}
+      0 \text{ when $i \neq j$} \\
+      1 \text{ when $i = j$}
+      \end{array}
+    \right.
+  .\] 
+  \item And since we need to find the vectors that orthogonal to all column vectors in $\hat{Q}$, which is the first $n$ columns of $Q$. We could actually see the remaining $m - n$ columns in  $Q$ are actually orthogonal to all column vectors in $\hat{Q}$, by the mutual orthogonality we observed in column space of $Q$. 
+  \item Therefore, what we need to do is just to find the value of Q via \textbf{complete} QR factorisation, via \texttt{np.linalg.qr(A, 'complete')}.
+  \item And we need to get the \textbf{last} $m - n$ \textbf{columns} from $Q$, via \texttt{Q[:, n]}. It should be the basis of the orthogonal complementary $U^{\bot}$.
+\end{itemize}
+
 
