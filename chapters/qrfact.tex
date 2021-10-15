@@ -40,3 +40,38 @@ And without loss of generality we consider $m > n$, and have:
   0 & 0 & \ldots & 0
 \end{spmatrix}
 \] 
+And we called this as the \textbf{complete QR factorisation}. 
+
+\medskip
+
+\noindent Note that, the term $q_{ik}r_{kj}$ would always give out 0 as result when $k > n$ and make no contribution to the value of  $a_{ij}$. Therefore, we could only consider the first $n$ columns of $Q$, $\hat{Q}$ and the first $n$ rows of  $R$,  $\hat{R}$ as result of factorisation instead (i.e. Determine $A = \hat{Q}\hat{R}$ as a reduced alternative).
+
+\subsection*{Exercise 2.3: Find an orthonormal basis of the orthogonal complement of a subspace}
+\addcontentsline{toc}{subsection}{Exercise 2.3: Find an orthonormal basis of the orthogonal complement of a subspace}
+\subsubsection*{Problem Description}%
+\label{ssub:problem_description}
+
+Given a set of vectors $ \{v_1, v_2, \ldots, v_n\}$ spans subspace $U \subset \mathbb{C}^{m}$, we need to find an orthonormal basis of its orthogonal complement $U^{\bot}$, defined as:
+\[
+U^{\bot} = \{x \in \mathbb{C}^{m}: \forall u \in U, x^{*}u = 0\} 
+.\] 
+(hint: You should make use of the built in QR factorisation routine
+
+\noindent \texttt{numpy.linalg.qr()}.)
+
+\subsubsection*{What to do}%
+\label{ssub:what_to_do}
+
+\begin{enumerate}
+  \item Think about what does QR factorisation actually do: what are the properties of $Q$ and $R$  (and similarly $\hat{Q}$ and $\hat{R}$ in the reduced version)?
+  \item You might notice $Q$ (and $\hat{Q}$) is unitary, so try to think about the relationship between column vectors in matrix by expanding $Q^*Q = I$.
+  \item And the basis of $U$ could be easily seen by the columns of $\hat{Q}$. So if we find the vectors orthogonal to all column vectors in $\hat{Q}$, we should find the basis of the orthogonal complement of $U$.
+  \item Think that how we could find the required orthogonal vectors in $Q$. Your task is now to use the relationship you found in (2) to find these vectors, and code with Python.
+\end{enumerate}
+
+\newpage
+\subsubsection*{Code Implementation}%
+\label{ssub:code_implementation}
+\lstinputlisting[language=Python, firstline=61, lastline=72]{./python/exercise2.py}
+
+

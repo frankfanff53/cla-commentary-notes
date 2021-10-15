@@ -56,3 +56,17 @@ def orthog_proj(Q):
     spanned by those vectors.
     """
     return Q.dot(np.conj(Q).T)
+
+
+def orthog_space(V):
+    """
+    Given set of vectors u_1,u_2,..., u_n, compute the
+    orthogonal complement to the subspace U spanned by the vectors.
+    """
+    _, n = V.shape
+    # Get Q unitary from comoplete qr factorisation.
+    Q, _ = np.linalg.qr(V, 'complete')
+
+    # Then the subspace orthogonal to U should be spanned
+    # by the remaining m - n col vectors by mutal orthogonality.
+    return Q[:, n:]
