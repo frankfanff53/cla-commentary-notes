@@ -92,4 +92,42 @@ Here we have some explanation to this implementation:
   \item And we need to get the \textbf{last} $m - n$ \textbf{columns} from $Q$, via \texttt{Q[:, n]}. It should be the basis of the orthogonal complementary $U^{\bot}$.
 \end{itemize}
 
+\newpage
+\section{QR factorisation by classical Gram-Schmidt}%
+We have already seen the concept of QR factorisation, and one of the application through the previous exercise. Then we are going to explore what exactly happens in this factorisation, via algorithms. The first implementation we would discuss would be the \textbf{classical Gram-Schmidt algorithm}. 
+
+\medskip
+\noindent But before we just show the explicit implementation, we could look backwards to see how vectors $ \{a_i\} $ factctorised to orthonormal vectors $ \{q_i\} $. Just expand $A = QR$ by arithmetic:
+
+ \[
+   A = QR \implies \begin{pmatrix} a_1 & a_2 & \ldots & a_n \end{pmatrix} = 
+   \begin{pmatrix} 
+     q_1 & q_2 & \ldots & q_n 
+  \end{pmatrix} 
+   \begin{pmatrix} 
+     r_{11} & r_{12} & \ldots & r_{1n} \\ 
+     0 & r_{22} & \ldots & r_{2n} \\
+     \vdots & \vdots & \ddots & \vdots \\
+     0 & 0 & \ldots & r_{nn}
+   \end{pmatrix}  
+.\] 
+So we could see the value of any column vector $a_j$ via column-space interpretation and get:
+\[
+  a_j = 
+   \begin{pmatrix} 
+     q_1 & q_2 & \ldots & q_j & \ldots & q_n 
+  \end{pmatrix} 
+  \begin{pmatrix} r_{1j}\\ r_{2j} \\ \vdots\\ r_{jj} \\ 0 \\ \vdots \\ 0 \end{pmatrix}
+\] 
+\[
+  = r_{1j} q_1 + r_{2j}q_2 + r_{3j}q_3 + \ldots + r_{jj}q_j + 0 \cdot q_{j + 1} + \ldots + 0
+  = \sum_{i=1}^{j} r_{ij}q_i
+.\] 
+Since we know $ \{q_i\} $ is an orthonormal set of vectors, so what we exactly did in QR factorisation is to project a vector $a_i$ orthogonally into every direction in $ \{q_i\} $, with approprate scale factors of different base vectors. These scale factors $r_{ij}$ would be stored in $R$. To find the scale factor of the projection in direction of  $q_i$, we could easily get the value:
+ \[
+   r_{ij} = q_i^{*}a_j
+.\] 
+%More importantly, if we see $a_j$ as a linear combination of the basis $ \{q_i\} $, it's clear to see the combination always ends with the term $r_{jj}q_j$. Consider the case when $j = 1$, then simply $a_1 = r_{11}q_1$ and $r_{11} = \|q_1\|$.
+
+
 
