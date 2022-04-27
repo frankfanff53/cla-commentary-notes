@@ -1,0 +1,192 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+\usetheme{Madrid}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+\usecolortheme{beaver}
+% \usecolortheme{lily}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Computational Linear Algebra]{Finding Eigenvalues of Matrices: Part I} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Feifan Fan} % Your name
+
+\institute[Imperial College London] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Imperial College London \\ % Your institution for the title page
+\medskip
+\textit{feifan.fan19@imperial.ac.uk} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+% %----------------------------------------------------------------------------------------
+% %	PRESENTATION SLIDES
+% %----------------------------------------------------------------------------------------
+
+% %------------------------------------------------
+% \section{Section 1} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+% %------------------------------------------------
+
+% \subsection{Introduction} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+\begin{frame}
+\frametitle{Finding Eigenvalues}
+Given that we have a matrix \(A \in \mathbb{C}^{m \times m}\), we want to find the eigenvalues \(\lambda \) and associated eigenvectors \(v\)  of \(A\) such that:
+\[
+    Ax = \lambda x \Rightarrow (A - \lambda I)x = 0 \Rightarrow det(A - \lambda I) = 0
+.\]
+This turns the problem to solve the equation:
+\[
+    p(x) = 0
+\]
+where \(p\) is the characteristic polynomial of \(A\). \medskip
+
+\noindent However, this problem seems to be hard if \(p\) is greater than degree 5, since there is no general solution for polynomials with degree 5 or greater. \medskip
+
+\noindent What should we do then?
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Strategies}
+Since we cannot find general solutions for all \(p\) with degree greater than 5, so the basic method we proposed cannot find eigenvalues for all \(A\). \medskip
+
+\noindent Therefore, we could either 
+\begin{itemize}
+\item Find some special matrices \(\hat{A}\) which could form a \(p\) such that we could compute roots directly from it.
+\end{itemize}
+OR
+\begin{itemize}
+    \item Find some way to transform \(A\) to structure of \(\hat{A}\), while preserving properties like characteristic polynomials, eigenvlaues etc.  
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Case 1: Diagonal Matrices}
+    Consider the following matrix:
+    \[
+        A = \begin{pmatrix} 
+            1 & 0 & 0  & \ldots & 0 & 0 \\
+            0 & 2 & 0  & \ldots & 0 & 0 \\
+            \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+            0 & 0 & 0 & \ldots & m - 1 & 0 \\
+            0 & 0 & 0 & \ldots & 0 & m \\
+        \end{pmatrix} 
+    .\]
+    The characteristic polynomial is 
+    \[
+        p(x) =\color{white}{(\lambda - 1)(\lambda - 2)\ldots(\lambda - (m - 1))(\lambda - (m))}  
+    .\]
+    The eigenvalues are
+    \[
+        \lambda = \color{white}{1, 2, 3, \ldots, m - 1, m}
+    .\]
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+    \frametitle{Case 2: The Eigenvalue Decomposition}
+    if we could write \(A\) in the following form:
+    \[
+        A = X \Lambda X^{-1}
+    \]
+    where \(X\) non-singular, \(\Lambda \) diagonal. \medskip
+    
+    \noindent We could then read-off eigenvalues from \(\Lambda\) as we mentioned above.
+    \begin{itemize}
+        \item \textbf{Why could we read off eigenvalues from \(\Lambda \)?}
+        \item Since \(A \to \Lambda \) is a similarity transformation, two similar matrices has same characteristic polynomial and eigenvectors.
+        \item But note not every matrices could do the eigen value decomposition, since not all matrices are diagonalizable.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Case 3: Schur Factorisation}
+    We firstly introduce \textbf{Schur Factorisation} where A could be written in:
+    \[
+        A = QTQ^{*}
+    \]
+    where \(Q\) is unitary and \(T\) is upper triangular. \medskip
+    
+    \noindent And note that, \textbf{every square matrix has a Schur Factorisation.} \medskip
+    
+    \noindent But how do we do that?
+    \begin{itemize}
+        \item Just like what we did in QR Factorisation, but a bit different:
+        \[
+            A \to Q_1^{*}AQ_1 \to Q_2^{*}Q_1^{*}AQ_1Q_2 \to \underbrace{Q_k^{*} \ldots Q_2^{*}Q_1^{*}}_{=Q^{*}}A\underbrace{Q_1Q_2 \ldots Q_k}_{=Q} = T
+        \]
+        \item Note that this process stops untils the transformed matrix converges to an upper triangular matrix. \textbf{(seems complicated!)} 
+    \end{itemize} 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Similarity Transformation to Upper Hessenberg Form}
+    \begin{algorithm}[H]
+        \caption{Similarity Transformation to Upper Hessenberg Form}\label{alg:cap}
+        \begin{algorithmic}
+        \Require \(A \in \mathbb{C}^{m \times m}\)
+        \For{ \(k = 1 \ldots m - 2\) }
+            \State \( x \gets A_{k+1: m, k}\) 
+            \State \(v_k \gets sign(x_1) \|x\|e_1+ x\) 
+            \State \(v_k \gets v_k / \|v_k\|\)
+            \State \(A_{k+1:m, k:m} = A_{k+1:m, k:m} - 2 v_k(v_k^{*}A_{k+1:m, k:m})\)
+            \State \(A_{1:m, k+1:m} = A_{1:m, k+1:m} - 2(A_{1:m, k+1:m}v_k)v_k^{*}\) 
+        \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 

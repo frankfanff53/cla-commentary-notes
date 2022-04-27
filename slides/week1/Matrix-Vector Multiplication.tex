@@ -1,0 +1,227 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+\usetheme{Madrid}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+\usecolortheme{beaver}
+% \usecolortheme{lily}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Computational Linear Algebra]{Numerical Linear Algebra Preliminaries I: \\ Matrix-Vector Multiplication} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Feifan Fan} % Your name
+
+\institute[Imperial College London] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Imperial College London \\ % Your institution for the title page
+\medskip
+\textit{feifan.fan19@imperial.ac.uk} % Your email address
+}
+\date{Autumn 2021} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Overview} % Table of contents slide, comment this block out to remove it
+% \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+% \end{frame}
+
+\begin{frame}
+\frametitle{Why Matrix-Vector Multiplication?}
+\begin{itemize}
+    \item In this course we are going to talk about the \textbf{computational} part of Linear Algebra, which is basically matrix multiplications. 
+    \item However, the \textbf{Matrix-Matrix Multiplications} seemed to be more complicated, in both \textbf{amount of computation} and \textbf{time complexity for computation,} especially when both matrices are large.
+    \item So we could start with a special case to get a more clear insight of how to make matrix multiplication computationally: \textbf{multiply a matrix with a vector} instead, which clearly reduces the complexity of the problem.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Problem Description}
+    Consider the following problem:
+        \[
+            \text{Find the value of } b = Ax, \text{ where } A \in \mathbb{C}^{m \times n}, x \in \mathbb{C}^{n}
+        .\]
+    Note that here we are talking about vectors and matrices over the \textbf{complex vector space} \(\mathbb{C}^{n}\) , and so are we for the rest of the course. \medskip
+    
+    
+    \begin{itemize}
+        \item Here what we are going to do is,
+            \begin{itemize}
+                \item giving out a \textbf{generalised formula} for (elements of) resulted \(b\)
+                \item using the formula to \textbf{devise an algorithm} to compute the result.
+            \end{itemize}
+        \item And we have two approches to solve this problem.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Approach I: Basic Interpretation}
+    Given that \(b = Ax\) where \(A\) and \(x\) are in correct dimensions. If we write the structure of them explicitly we would have:
+    \[
+        A = \begin{pmatrix} 
+            a_{11} & a_{12} & \ldots & a_{1n} \\
+            a_{21} & a_{22} & \ldots & a_{2n} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            a_{m1} & a_{m2} & \ldots & a_{mn}
+        \end{pmatrix},
+        x = \begin{pmatrix} 
+            x_1 \\
+            x_2 \\
+            \vdots \\
+            x_n
+        \end{pmatrix} 
+    \]
+    And if we expand \(b = Ax\) via the \textbf{basic matrix multiplication rule}, \medskip
+    
+    \noindent the result would be:
+    \[
+        b = Ax = \color{white}
+        {
+            \begin{pmatrix} 
+                a_{11}x_1 + a_{12}x_2 + \ldots + a_{1n}x_{n} \\
+                a_{21}x_1 + a_{22}x_2 + \ldots + a_{2n}x_{n} \\
+                \vdots \\
+                a_{m1}x_1 + a_{m2}x_2 + \ldots + a_{mn}x_{n}  
+            \end{pmatrix}
+        }
+    \]
+\end{frame}
+
+\begin{frame}
+    \frametitle{Approach I: Basic Interpretation (cont.)}
+    To generalise the result we get, we take the \(i\) th component of the resulted vector \(b\), and it would be:
+    \[
+        b_{i} = 
+        \color{white}
+        {
+            a_{i1}x_1 + a_{i2}x_2 + \ldots + a_{in}x_{n} = \sum_{j=1}^{n} a_{ij}x_{j}
+        }
+    \]
+    And this is the formula we wanted with \textbf{basic interpretation} of the matrix-vector multiplication. Then we would use this idea to devise an algorithm for computing \(b = Ax\). 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm: with Basic Interpretation}
+    Before we introduce the algorithm, let's think how to devise an algorithm properly in a top-down level: \medskip
+    
+    \noindent To devise an algorithm, we could generally follow the follwing steps:
+    \begin{itemize}
+        \item What do we \textbf{have}, and what would be finally \textbf{want to get}? 
+        \item How to get what we want via \textbf{simple ideas}?
+        \item Can you \textbf{break up} the original problem into \textbf{smaller problems}?
+        \item How to generally solve these with \textbf{maths behind it}?
+        \item How to achieve your schema \textbf{in details} with \textbf{programming skills}?
+    \end{itemize}
+    We would apply this method to find an algorithm for computing \(b = Ax\) with basic interpretation.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm: with Basic Interpretation (cont.)}
+    \begin{itemize}
+        \item What do we \textbf{have}, and what would be finally \textbf{want to get}? \medskip
+        
+        \noindent We have a matrix \(A \in \mathbb{C}^{m \times  n}\) and a vector \(x \in \mathbb{C}^{n}\), and we want the algorithm returns a vector \(b = Ax\).
+
+        \item How to get what we want via \textbf{simple ideas}?
+        \item Can you \textbf{break up} the original problem into \textbf{smaller problems}? \medskip
+        
+        \noindent We could get value of \(b\) by calculating the values of elements one-by-one. We would start with calculating \(b_1\), and then repeat the similar procedure to calculate \(b_2, b_3 \ldots b_m\). Finally the collection of \(\{b_{i}\} \) would be the elements of \(b = Ax\).   
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm: with Basic Interpretation (cont.)}
+    \begin{itemize}
+        \item How to generally solve these with \textbf{maths behind it}?\medskip
+        
+        \noindent Since we have the generalised formla for computing \(b_{i}\) with basic interpretation, we could just apply this formula in each sub-task for computing \(i\) th component of \(b\). 
+        \item How to achieve your schema \textbf{in details} with \textbf{programming skills}? \medskip
+        
+        \noindent You could pause at here and think about it. Check your schema with the algorithm in the next page! \medskip
+        
+        \noindent (Hint: Think about how we would do in programming with repeated procedures, and how to apply the summation in the generalised formula with programming strategies.)
+    \end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+    \frametitle{Algorithm: with Basic Interpretation (cont.)}
+    \begin{algorithm}[H]
+        \caption{Matrix-Vector Multiplication with Basic Interpretation}\label{alg:cap}
+        \begin{algorithmic}
+        \Require \(A \in \mathbb{C}^{m \times n}\), \(x \in \mathbb{C}^{n}\)
+        \Ensure \(b = Ax \in \mathbb{C}^{m}\)
+        \State \(b \gets\) an empty array with length \(m\)
+        \For{ \(i = 1 \ldots m\) }
+            \State \( sum \gets 0\) 
+            \For{ \(j = 1 \ldots n\) }
+                \State \(sum \gets sum + A[i][j] \times x[j]\) 
+            \EndFor
+            \State \(b[i] = sum\) 
+        \EndFor
+        \State \Return \(b\) 
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm: with Basic Interpretation (cont.)}
+    Note that
+    \begin{itemize}
+        \item The algorithm above only provides you an provision that how the matrix multiplication works with basic interpretation. 
+        \item I left it as not the "best" algorithm and gave you space for implementing your own version of function. You are also free to optimise the algorithm above, given that it preserves the functionalities!
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 
