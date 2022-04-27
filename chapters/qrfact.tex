@@ -123,10 +123,65 @@ So we could see the value of any column vector $a_j$ via column-space interpreta
   = r_{1j} q_1 + r_{2j}q_2 + r_{3j}q_3 + \ldots + r_{jj}q_j + 0 \cdot q_{j + 1} + \ldots + 0
   = \sum_{i=1}^{j} r_{ij}q_i
 .\] 
-Since we know $ \{q_i\} $ is an orthonormal set of vectors, so what we exactly did in QR factorisation is to project a vector $a_i$ orthogonally into every direction in $ \{q_i\} $, with approprate scale factors of different base vectors. These scale factors $r_{ij}$ would be stored in $R$. To find the scale factor of the projection in direction of  $q_i$, we could easily get the value:
+Starting with $a_1$, we could see that:
  \[
-   r_{ij} = q_i^{*}a_j
+a_1 = r_{11} q_1
 .\] 
+and in this expression we could observe $q_1$ is the unit vector parallel to $a_1$, so $r_{11}$ and $q_1$ should have the value
+\[
+r_{11} = \|a_1\| \text{ and } q_1 = \frac{a_1}{\|a_1\|} = \frac{a_1}{r_{11}}
+.\]
+Then consider $a_2$ from the summation expression above:
+ \[
+a_2 = r_{12}q_1 + r_{22}q_2
+.\]
+But we don't know how to get the value of $r_{12}$ yet. Recall the idea we used in the implementation of $\texttt{orthog\_cpts()}$, we have now have a one-element only orthonormal set $ \{q_1\} $, we need to compute $a_2 = r' + u_1q_1 = r_{22}q_2 + r_{12}q_1$. So simply we see
+\[
+  r_{12} = u_1 = q_1^* a_2
+\]
+and to get the value of $q_2$ and $r_{22}$, we remove the component of $q_1$ from $a_2$ and we could get:
+\[
+    v_2 = a_2 - r_{12}q_1 = r_{22}q_2 \implies 
+    \left\{
+      \begin{array}{l}
+      r_{22} = \|v_2\| \\
+      q_2 = \frac{v_2}{\|v_2\|} = \frac{v_2}{r_{22}}
+      \end{array}
+    \right.
+.\]
+Then we could add $q_2$ to the orthonormal set and use $ \{q_1, q_2\} $ to compute corresponding $q_3$ and scale factor $r_{i3}$s. And as we repeat these steps iteratively, we could compute the value of $q_4, q_5, \ldots$ until $q_n$. \medskip
+
+\noindent And more generally, given matrix \(A \in \mathbb{C}^{m \times n}\), we could compute the entries of \(Q \in \mathbb{C}^{m \times  n}, R \in \mathbb{C}^{n \times  n}\) with the following formula:
+\[
+  q_i = \frac{v_{i}}{\|v_{i}\|}
+.\]
+\[
+  r_{ij} = \left\{
+    \begin{array}{ll}
+    q_{i}^{*}a_{j} & i < j\\
+    \|v_{j}\| & i = j\\
+    0 & \text{otherwise}
+    \end{array}
+  \right.
+.\]
+where
+\[
+  v_{i} = \left\{
+      \begin{array}{ll}
+      a_{i} & i = 1\\
+      a_{i} - \sum_{k=1}^{i - 1} r_{ki}q_{k} = a_{i} - \sum_{k=1}^{i - 1} (q_{k}q_{k}^{*})a_{i} & \text{otherwise}
+      \end{array}
+  \right.
+.\]
+%and more generally when $i \neq j$:
+%\[
+%r_{ij} = q_i^* r_j
+%.\] 
+
+%Since we know $ \{q_i\} $ is an orthonormal set of vectors, so what we exactly did in QR factorisation is to project a vector $a_i$ orthogonally into every direction in $ \{q_i\} $, with approprate scale factors of different base vectors. These scale factors $r_{ij}$ would be stored in $R$. To find the scale factor of the projection in direction of  $q_i$, we could easily get the value:
+ %\[
+   %r_{ij} = q_i^{*}a_j
+%.\] 
 %More importantly, if we see $a_j$ as a linear combination of the basis $ \{q_i\} $, it's clear to see the combination always ends with the term $r_{jj}q_j$. Consider the case when $j = 1$, then simply $a_1 = r_{11}q_1$ and $r_{11} = \|q_1\|$.
 
 
