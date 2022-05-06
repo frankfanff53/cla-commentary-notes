@@ -1,7 +1,10 @@
 In computational linear algebra, we would spend a lot of time in matrix equations or expressions like $Ax = b$. However, for large matrices  $A$, it is always difficult and inefficient to find the value of $x$, if we try finding the inverse of $A$ directly. So what we want to do is to "transform" our $A$ into smaller building blocks with specific properties, and use the properties of them to make the equation easier to solve. 
 
 \medskip
-\noindent The transformations, should preserve the correctness in matrix calculations (be sufficiently free from truncation errors, as said in the \textbf{Introduction of Chapter 2, master notes}), and be efficient enough to perform. Here, let us talk about the very first transformation, the \textbf{QR Factorisation}. 
+\noindent The transformations, should preserve the correctness in matrix calculations (be sufficiently free from truncation errors, as said in the \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#what-is-the-qr-factorisation}{\textbf{Introduction}} of Chapter 2), and be efficient enough to perform. Here, let us talk about the very first transformation, the \textbf{QR Factorisation}. 
+\medskip
+
+\noindent You might have seen this in your year 2 \href{https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis}{Numerical Analysis} Course, and make some progress in implementation using Julia or Python. We would do some recap and dig further in algorithm stability, and/or time complexities with different ways of implementations.
 
 \section{QR Factorisation Concept}%
 What does \textbf{QR Factorisation} do is to simply decompose an arbitrary matrix $A$, to a unitary matrix $Q$ and an upper triangular matrix $R$. 
@@ -55,6 +58,9 @@ Given a set of vectors $ \{v_1, v_2, \ldots, v_n\}$ spans subspace $U \subset \m
 \[
 U^{\bot} = \{x \in \mathbb{C}^{m}: \forall u \in U, x^{*}u = 0\} 
 .\] 
+Implement this as a function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.orthog_space}{\texttt{exercises2.orthog\_space()}}. \medskip
+
+\noindent  
 (hint: You should make use of the built in QR factorisation routine
 
 \noindent \texttt{numpy.linalg.qr()}.)
@@ -66,15 +72,10 @@ U^{\bot} = \{x \in \mathbb{C}^{m}: \forall u \in U, x^{*}u = 0\}
   \item Think about what does QR factorisation actually do: what are the properties of $Q$ and $R$  (and similarly $\hat{Q}$ and $\hat{R}$ in the reduced version)?
   \item You might notice $Q$ (and $\hat{Q}$) is unitary, so try to think about the relationship between column vectors in matrix by expanding $Q^*Q = I$.
   \item And the basis of $U$ could be easily seen by the columns of $\hat{Q}$. So if we find the vectors orthogonal to all column vectors in $\hat{Q}$, we should find the basis of the orthogonal complement of $U$.
-  \item Think that how we could find the required orthogonal vectors in $Q$. Your task is now to use the relationship you found in (2) to find these vectors, and code with Python.
+  \item Go back to step 2 and see if you can find vectors orthogonal to columns of \(\hat{Q}\) from some certain matrices. Make the implementation in Python.
 \end{enumerate}
 
-\newpage
-\subsubsection*{Code Implementation}%
-\label{ssub:code_implementation}
-\lstinputlisting[language=Python, firstline=61, lastline=72]{./python/exercise2.py}
-
-\subsubsection*{Analysis}%
+\subsubsection*{Spoil Alert\ldots There is a way you could figure out the problem}%
 \label{ssub:analysis}
 Here we have some explanation to this implementation:
 \begin{itemize}
@@ -88,8 +89,7 @@ Here we have some explanation to this implementation:
     \right.
   .\] 
   \item And since we need to find the vectors that orthogonal to all column vectors in $\hat{Q}$, which is the first $n$ columns of $Q$. We could actually see the remaining $m - n$ columns in  $Q$ are actually orthogonal to all column vectors in $\hat{Q}$, by the mutual orthogonality we observed in column space of $Q$. 
-  \item Therefore, what we need to do is just to find the value of Q via \textbf{complete} QR factorisation, via \texttt{np.linalg.qr(A, 'complete')}.
-  \item And we need to get the \textbf{last} $m - n$ \textbf{columns} from $Q$, via \texttt{Q[:, n]}. It should be the basis of the orthogonal complementary $U^{\bot}$.
+  \item Therefore, what we need to do is just to find the value of Q. And we need to get the \textbf{last} $m - n$ \textbf{columns} from $Q$, which should should be the basis of the orthogonal complementary $U^{\bot}$.
 \end{itemize}
 
 \newpage
@@ -173,16 +173,4 @@ where
       \end{array}
   \right.
 .\]
-%and more generally when $i \neq j$:
-%\[
-%r_{ij} = q_i^* r_j
-%.\] 
-
-%Since we know $ \{q_i\} $ is an orthonormal set of vectors, so what we exactly did in QR factorisation is to project a vector $a_i$ orthogonally into every direction in $ \{q_i\} $, with approprate scale factors of different base vectors. These scale factors $r_{ij}$ would be stored in $R$. To find the scale factor of the projection in direction of  $q_i$, we could easily get the value:
- %\[
-   %r_{ij} = q_i^{*}a_j
-%.\] 
-%More importantly, if we see $a_j$ as a linear combination of the basis $ \{q_i\} $, it's clear to see the combination always ends with the term $r_{jj}q_j$. Consider the case when $j = 1$, then simply $a_1 = r_{11}q_1$ and $r_{11} = \|q_1\|$.
-
-
-
+And then the explicit algorithm of QR factorisation via classical Gram-Schmidt should be very straightforward. You can find it \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#qr-factorisation-by-classical-gram-schmidt-algorithm}{here} from master notes and step in to the very first implementation exercise of QR.

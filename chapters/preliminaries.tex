@@ -52,17 +52,19 @@ And we are asked to consider the matrix multiplication $b = Ax$:
     \item You have now seen the derivation of Matrix-Vector Multiplication formula and its property, but how do we implement this schema as a python function? Try Exercise 1.1!
 \end{itemize}
 
-\subsection*{Exercise 1.1: Basic M-V Multiplication}%
+\subsection*{Exercise 1.1: Basic M-V Multiplication}
 \addcontentsline{toc}{subsection}{Exercise 1.1: Basic M-V Multiplication}
+I assumed that all of you have set up the coding environment and obtained the skeleton code of the exercises. If not, see \href{https://comp-lin-alg.github.io}{here} for further instructions.
 \subsubsection*{Problem Description}
-In this exercise, we are given matrix $A$ and vector $x$ as defined above. What we need to is implementing a function which returns the matrix-vector product $b = Ax$. We are asked to implement this with a \textbf{double-nested loop}.
+In this exercise, we are given matrix $A$ and vector $x$ as defined above. What we need to is implementing a function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises1.basic_matvec}{\texttt{exercises1.basic\_matvec()}}
+under the \texttt{cla\_utils} package, which returns the matrix-vector product $b = Ax$. We are asked to implement this with a \textbf{double-nested loop}.
 
 \smallskip
 \noindent How do we implement this function? 
 
 \begin{itemize}
   \item Since this is the very first exercise, I would show you the mathematics behind the implementation, the steps you need to do in the implementation, and how to translate steps into code, in details. 
-  \item \textbf{Note: Detailed explanation/analysis about how to write code would only be in this exercise, but would not be provided in any future exercises.}
+  \item \textbf{However, detailed explanation/analysis about how to write code would only be in this exercise, }in the sense of inspiring you for code implementations instead of just giving you the code.
 \end{itemize}
 \subsubsection*{What to do}
 \begin{enumerate}
@@ -70,9 +72,11 @@ In this exercise, we are given matrix $A$ and vector $x$ as defined above. What 
     \[
     b_i = \sum_{j = 1}^{n} a_{ij} x_j, i \in \{1, 2, 3 \ldots m\}
     .\] 
-  \item There is a summation sign in the caclulation of $b_i$, and it should indicate a \textbf{for} loop in the implementation of calculating $b_i$.
+  \item There is a summation sign in the calculation of $b_i$, and it should indicate a \textbf{for} loop in the implementation of calculating a single $b_i$.
   \item \textbf{Note: We always relate the summation in mathematics and for loop in programming together, try to convince yourself that you really understand why we were allowed to do so.}
-  \item Also the basic 'algorithm' indicates that we would compute the value of $b_i$ for $m$ times, with similar methods. Therefore, there should be another \textbf{for} loop to compute all values of $b_i$ in $m$ iterations. Now you should understand why a \textbf{double-nested for loop} is necessary for our implementation.
+  \item Also the basic 'algorithm' indicates that we would compute the value of $b_i$ for $m$ times, with the method described in the formula. Therefore, we shall need another \textbf{for} loop to compute all $m$ values of $b_i$. 
+  
+  Now you should understand why a \textbf{double-nested for loop} is necessary for our implementation.
 \end{enumerate}
 \begin{itemize}
    \item Therefore, the structure of our implementation should be:
@@ -94,15 +98,17 @@ In this exercise, we are given matrix $A$ and vector $x$ as defined above. What 
         x_j \to  \texttt{x[j]}
       .\]     
     \item Since we are doing summation, what we are going to do in the inner loop is just to keep adding computed results during iterations of $j$, i.e.  \texttt{bi += A[i][j] * x[j]} in each iteration of $j$.
-    \item The function requires an n-dimentional \texttt{ndarray}, so we need to wrap the list \texttt{b} with \texttt{np.array()} when function returns the result.
+    \item The function requires an n-dimensional \texttt{ndarray}, so we need to wrap the list \texttt{b} with \texttt{np.array()} when function returns the result.
+    \item \textbf{(Important!)} To test your code, do not forget to activate your virtual environment first, and then using \texttt{pytest} to test your code.
+    \item \textbf{Check your implementation pass the provided test cases.}
   \end{itemize}
-\subsubsection*{Code Implementation} 
-\begin{itemize}
-    \item Therefore, we have all things we need from analysis above, and fill the template we would get the final implementation:
-      \lstinputlisting[language=Python, firstline=17, lastline=33]{./python/exercise1.py}
-    \item \textbf{(Important!)} To test your code, do not forget to activate your virtual environment first, and then using either \texttt{pytest} or \texttt{py.test} to do the testing.
-    \end{itemize}
+% \subsubsection*{Code Implementation} 
+% \begin{itemize}
+%     \item Therefore, we have all things we need from analysis above, and fill the template we would get the final implementation:
+%       \lstinputlisting[language=Python, firstline=17, lastline=33]{./python/exercise1.py}
+%     \end{itemize}
 \section{Column-Space Formulation}
+\label{ex1.2}
 In this section, we would give you an intuition to interpret matrix-vector multiplication as a linear combination of columns of $A$, with coefficients taken from the entries of $x$.
  \begin{itemize}
 \item If we write the result of $b = Ax$ explicitly, we would get:
@@ -133,7 +139,7 @@ which is a linear combination with columns of $A$ and entries of $x$.
 \subsection*{Exercise 1.2: M-V Multiplication with C-S Formulation}%
 \addcontentsline{toc}{subsection}{Exercise 1.2: M-V Multiplication with C-S Formulation}
 \subsubsection*{Problem Description}
-The question says the given conditions are unchanged. However, in this implementation we were asked to \textbf{use a single loop} over entries of A (and x).
+The question says the given conditions are unchanged. However, in this implementation of \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises1.column_matvec}{\texttt{exercises1.column\_matvec()}} we were asked to \textbf{use a single loop} over entries of A (and x).
 
 \medskip
 \noindent So considering the column-space formulation we mentioned above, we could easily get the implementation by using:
@@ -141,17 +147,18 @@ The question says the given conditions are unchanged. However, in this implement
 b = Ax =  \sum_{i=1}^{n} x_i a_i
 .\]
 
-\subsubsection*{Code Implemenation}
-\lstinputlisting[language=Python, firstline=36, lastline=46]{./python/exercise1.py}
-\subsubsection*{Analysis} 
+% \subsubsection*{Code Implementation}
+% \lstinputlisting[language=Python, firstline=36, lastline=46]{./python/exercise1.py}
+\subsubsection*{Hints} 
 Here are several things also worth mentioning:
 \begin{itemize}
 \item Since we are asked to use a \textbf{single loop} only, we could easily see that using the formula with one $\Sigma$ sign would work. i.e. the formula with column-space formulation.
 \item Then according to the formula derivation above, we only need to iterate through the column vectors in matrix $A$, i.e. \texttt{A[:, i]} and multiply with the $i$th entry of $x$, the final result would be calculated as the sum of products in each iterations.
-\item The placeholder of the result, \texttt{b}, is initialized as a \texttt{numpy} array with zeros, rather than an empty array. 
-\item That is because in the addition of numpy, two arrays should be equi-dimentioned. Using an empty array would make the dimension zero, which is obviously different from the dimension of product obtained in each iteration.
-\item I used \texttt{for i, elem in enumerate(x)} in my implementation, rather than \texttt{for i in range(len(x))} and \texttt{elem = x[i]} for code simplicity and elegance.
+\item The placeholder of the result, \texttt{b}, should not be initialized as an empty array. \textbf{(Think why shouldn't, and what is the correct initializer?)}
+% \item That is because in the addition of numpy arrays, two arrays should be equi-dimentioned. Using an empty array would make the dimension zero, which is obviously different from the dimension of product obtained in each iteration.
+% \item I used \texttt{for i, elem in enumerate(x)} in my implementation, rather than \texttt{for i in range(len(x))} and \texttt{elem = x[i]} for code simplicity and elegance.
 \end{itemize}
+\textbf{Remember to check your implementation pass the provided test cases.}
 \section{Matrix-Matrix Multiplication}%
 \textbf{This part of derivation is similar to the Matrix-Vector case.} Now our matrix $A$ is in dimension $\mathbb{C}^{m \times l}$, and consider another matrix $C \in \mathbb{C}^{l \times n}$ and we have matrix $B = AC$:
 \begin{itemize}
@@ -178,6 +185,7 @@ Here are several things also worth mentioning:
 \end{itemize}
 \subsection*{Exercise 1.3: Execution Time Comparison}%
 \addcontentsline{toc}{subsection}{Exercise 1.3: Execution Time Comparison}
+You don't need to implement anything in this exercise, but just run several lines of code in your terminal. \textbf{This exercise is not assessed.}
 \subsubsection*{Problem Description}
 In this section we are not asked to implement anything, but we could use the defined function $\texttt{time\_matvecs()}$ in package to see the different execution time, for different matrix multiplication algorithm implementations:
 \begin{lstlisting}
@@ -205,7 +213,7 @@ We would clearly see the execution time:
 .\]
 As the master notes saying, in these exercises you should consider the best way to \textbf{make use of Numpy built-in operations} (which will often make the code more maths-like and readable, as well as potentially faster).
 \section{Range of a Matrix}%
-The master notes have the definition of \texttt{range}, here I would give the definition in set notation \textbf{(alternative version of Definition 1.4 master notes)} :
+The master notes have the definition of \texttt{range}, here I would give the definition in set notation \textbf{(alternative version of} \href{https://comp-lin-alg.github.io/L1_preliminaries.html#range-nullspace-and-rank}{Definition 1.4}\textbf{ master notes)}:
 \[
 \text{range}(A) = \{a : \exists x \in \mathbb{C}^{n}, Ax = a \}, \text{ where } A \in \mathbb{C}^{m \times n}
 .\]
@@ -225,7 +233,7 @@ Therefore, we finally have:
 \[
   \text{range}(A) = \text{span}(a_1, \cdots, a_n)
 .\] 
-That is to say, range($A$) is the vector space spanned by the columns of $A$, as mentioned in the  \textbf{Theorem 1.5} of master notes. 
+That is to say, range($A$) is the vector space spanned by the columns of $A$, as mentioned in the  \href{https://comp-lin-alg.github.io/L1_preliminaries.html#range-nullspace-and-rank}{Theorem 1.5} of master notes. 
 
 \section{Null Space and Rank of a Matrix}%
 The definition of the null space of an Matrix is very simple as stated by the master notes:
@@ -267,7 +275,8 @@ Then we would talk about the rank of a matrix. Actually we have two definitions,
         \filldraw[fill=yellow!30!white]  (4, 0) rectangle (6.5, 4) node[pos=.5] {$0_{k\times (n - k)}$};
         \draw (4, 0) rectangle (6.5, -2) node[pos=.5] {\small $0_{(m - k)\times (n - k)}$};
       \end{tikzpicture}
-      \caption{Structure of matrix after elementary row and column operations}
+      \caption{Structure of \(A\) after elementary row and column operations}
+      \label{fig:structure}
   \end{figure}
   \item Then it is not hard to see that, since apart from the identity matrix block $I_k$, the other blocks in $A''$ are just 0s, so the dimension of row space and column space are both equal to the 'size' of the identity matrix block $k$. i.e. the row rank and the column rank are equal for all matrices.
 \end{itemize}
@@ -287,6 +296,7 @@ And I would say the definition of \textbf{full rank} is still straightforward th
       \draw (0, 0) rectangle (3, -2) node[pos=.5] {$0_{(m - n)\times n}$};
     \end{tikzpicture}
     \caption{$m \ge n$}
+    \label{fig:case1}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.4\textwidth}
@@ -296,14 +306,15 @@ And I would say the definition of \textbf{full rank} is still straightforward th
         \draw (3, 0) rectangle (5, 3) node[pos=.5] {$0_{m\times (m - n)}$};
       \end{tikzpicture}
       \caption{$m < n$}
+      \label{fig:case2}
     \end{subfigure}
     \caption{Full rank demonstration}
 \end{figure}
 \begin{itemize}
   \item Firstly we could think the case $m \ge n$, here $n$ is the 'lesser' in dimension $\mathbb{C}^{m \times n}$, and for the given matrix $A$, the maximum number of linearly independent vectors in column vectors the matrix should be $n$. 
-  \item And if we try to continuously do elementary row and column operations like we do in the previous proof, we would get the transformed matrix $A'$. If all column vectors are linearly independent, unlike any general matrix after transformation (see \textbf{Figure 1}), the size of identity matrix block in $A'$ would just fit the 'width' of $A'$($A$ as well), as shown in \textbf{Figure 2(a)}. 
+  \item And if we try to continuously do elementary row and column operations like we do in the previous proof, we would get the transformed matrix $A'$. If all column vectors are linearly independent, unlike any general matrix after transformation (see \autoref{fig:structure}), the size of identity matrix block in $A'$ would just fit the 'width' of $A'$($A$ as well), as shown in \autoref{fig:case1}. 
   \item So the rank of matrix $A$, i.e. the size of identity matrix block in $A'$, should be $n$. And the rank cannot be any bigger for all matrix $M \in \mathbb{C}^{m \times n}$. Therefore, we call matrix $A$ has \textbf{full} rank in this case.
-  \item In the other case where $m < n$, we could use same intuition to demonstrate the idea of  \textbf{full rank} where the 'lesser' here is the 'height' of $A$, i.e.  $m$ in this case. You could see it from \textbf{Figure 2(b)}.
+  \item In the other case where $m < n$, we could use same intuition to demonstrate the idea of  \textbf{full rank} where the 'lesser' here is the 'height' of $A$, i.e.  $m$ in this case. You could see it from \autoref{fig:case2}.
 \end{itemize}
 \section{Full Rank and Matrix Properties}%
 In this part, we are going to talk about the proof of  \textbf{Theorem 1.9} in the master notes:
@@ -314,7 +325,7 @@ In this part, we are going to talk about the proof of  \textbf{Theorem 1.9} in t
   \iff (\forall x, y \in \mathbb{C}^{n}, x \neq y \implies Ax \neq Ay) \iff A \text{ is an injection}
 \]
 \[
-\iff \forall x \in \mathbb{C}^{n} Ax \text{ is unique in }\mathbb{C}^{m}
+\iff \forall x \in \mathbb{C}^{n}, Ax \text{ is unique in }\mathbb{C}^{m}
 .\] 
 \subsubsection*{Proof}
 \begin{itemize}
@@ -350,14 +361,17 @@ And also it is clear to see the relations between the full rank and invertibilit
 \subsection*{Exercise 1.11: Construct a Rank-2 Matrix}%
 \addcontentsline{toc}{subsection}{Exercise 1.11: Construct a Rank-2 Matrix}
 \subsubsection*{Problem Description}
-Given that we have $u_1, u_2 \in \mathbb{C}^{m}$ and $v_1, v_2 \in \mathbb{C}^{n}$, we want to construct a rank-2 matrix $A = u_1v_1^{*} + u_2v_2^{*}$. However, from the given code and the specification, we need to somehow return matrix  $A$ as a product of two other matrices $B$ and $C$.
+Given that we have $u_1, u_2 \in \mathbb{C}^{m}$ and $v_1, v_2 \in \mathbb{C}^{n}$, we want to construct a rank-2 matrix $A = u_1v_1^{*} + u_2v_2^{*}$. However, from the given code and the specification, we need to implement a function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises1.rank2}{\texttt{exercises1.rank2()}} returning matrix  $A$ as a product of two other matrices $B$ and $C$.
 \subsubsection*{What to do}
 We need to consider the following two questions:
 \begin{itemize}
   \item How to write $A$ in terms of a product of matrices?
   \item Why $A$ is rank-2 under this construction?
 \end{itemize}
-And here we consider the $A$ as a summation of two matrices first:
+Pause at here for a moment to think about these two questions. Feel free to read the answers in the next page if you get confused.
+\newpage
+
+\noindent Here we consider the $A$ as a summation of two matrices first:
 \[
 A = u_1v_1^{*} + u_2v_2^{*}
 \]
@@ -379,11 +393,15 @@ with
 .\] 
 To generalize this, we could now write $A$ in terms of a product of two matrices:
 \[
-A = \begin{pmatrix} u_1 & u_2 \end{pmatrix} \begin{pmatrix} v_{1}^{*}\\ v_{2}^{*} \end{pmatrix}  
+A = \begin{pmatrix} u_1 & u_2 \end{pmatrix} \begin{pmatrix} v_{1}^{*}\\ v_{2}^{*} \end{pmatrix}   = \begin{pmatrix} u_1 & u_2 \end{pmatrix} \begin{pmatrix} v_{1}^{*} & v_{2}^{*} \end{pmatrix}^{\top}
 .\]
-So our first job has been done, now here is the implementation:
-\subsubsection*{Code Implementation}
-\lstinputlisting[language=Python, firstline=56, lastline=69]{./python/exercise1.py}
+So our first job has been done, now it is your time for implementation. \medskip
+
+\noindent 
+\textbf{Remember to check your implementation pass the provided test cases.}
+% \subsubsection*{Code Implementation}
+% \lstinputlisting[language=Python, firstline=56, lastline=69]{./python/exercise1.py}
+\subsubsection*{Analysis}
 Now let us talk about the rank of $A$, why it is necessarily 2?
 We recall the result of $A$ we have found with column-space formulation: 
 \[
@@ -392,7 +410,7 @@ A = u_1v_1^{*} + u_2v_2^{*} = \begin{pmatrix} v_{11}^{*}u_1 + v_{21}^{*}u_2 & v_
 We could see that, every column of $A$ is a linear combination of $u_1$ and $u_2$, assume that they are linearly independent. Therefore, when we are talking about the range of $A$, it should be a vector space spanned by $u_1$ and $u_2$ and the dimension of the space should be 2. \textbf{i.e. the rank is 2 obviously.} 
 \newpage
 \section{Invertibility and inverses}%
-The idea and properties related to invertibility and inverses should be quite familiar, I would not talk about this here. What I want to focus is the proof exercise mentioned in the master notes, and the exercise in this part.
+The idea and properties related to invertibility and inverses should be quite familiar, I would not talk about this here. What I want to focus is the proof and the coding exercise in this part.
 \subsubsection*{Problem Description}
 The exercise is asked us to prove that, there exists a unique \textbf{left} inverse $Z$ of a given square matrix $A \in \mathbb{C}^{n \times n}$ such that $ZA = I_n$. And here is the proof:
 \subsubsection*{Proof}
@@ -430,9 +448,12 @@ The exercise is asked us to prove that, there exists a unique \textbf{left} inve
 \subsection*{Exercise 1.13: Find the inverse of a given matrix}%
 \addcontentsline{toc}{subsection}{Exercise 1.13: Find the inverse of a given matrix}
 \subsubsection*{Problem Description}
-Given that a square matrix $A = I_m + uv^{*} \in \mathbb{C}^{m \times m}$, where $u, v \in \mathbb{C}^{m}$. Suppose we could find the inverse $A'$ written in  $A' = I_m + \alpha uv^{*}$, determine the value of $\alpha$ and implement the function $\texttt{rank1pert\_inv()}$ to return the inverse matrix $A'$.
-So we try to determine the value of $\alpha$ first:
-\subsubsection*{Analysis}
+Given that a square matrix $A = I_m + uv^{*} \in \mathbb{C}^{m \times m}$, where $u, v \in \mathbb{C}^{m}$. Suppose we could find the inverse $A'$ written in  $A' = I_m + \alpha uv^{*}$, determine the value of $\alpha$ and implement the function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises1.rank1pert_inv}{\texttt{exercises1.rank1pert\_inv()}} to return the inverse matrix $A'$. \medskip
+
+\noindent Pause at here for a moment to think about writing value of \(\alpha\) in terms of \(u\) and \(v\). Feel free to read the answers in the next page if you get confused.
+\newpage
+\subsubsection*{What to do}
+\noindent So we try to determine the value of $\alpha$ first:
 \begin{itemize}
   \item Given that $A A^{-1} = I_m$:
     \[
@@ -452,13 +473,13 @@ So we try to determine the value of $\alpha$ first:
     \]
     whenever $A$ is invertible.
 \end{itemize}
-So the code implementation shoule be very simple.
-\subsubsection*{Code Implementation}
-\lstinputlisting[language=Python, firstline=72, lastline=79]{./python/exercise1.py}
-\subsubsection*{Efficiency Measuring}
+So the code implementation for you should be very simple. \medskip
+
+\noindent \textbf{Check your implementation pass the provided test cases.}
+\subsubsection*{Efficiency Measuring (Non-assessed part for this exercise)}
 To measure the time taken for computing inverse of this implementation, and compare it with the built-in numpy implementation (just like what we did for timing the matrix-vector multiplication), I add the following code:
-\lstinputlisting[language=Python, firstline=82, lastline=100]{./python/exercise1.py}
-and the output shows that:
+\lstinputlisting[language=Python, firstline=65, lastline=77]{./python/exercise1.py}
+with pre-defined \texttt{u0}, \texttt{v0}, and the output shows that:
 \begin{lstlisting}
 >>> import cla_utils
 >>> cla_utils.time_matinvs()
@@ -468,11 +489,11 @@ Timing for numpy matinv
 0.005589449000012792
 \end{lstlisting}
 
-\noindent We could see that the numpy implementation is slower. The reason of this output I suppose is that, the complexity of the numpy implementation, to be more specific, the number of operations in the numpy implementation is more than that in our implementation above. Therefore, it takes longer time to compute the inverse.
+\noindent We could see that the numpy implementation is slower. The reason of this output is that, unlike our implementation, the numpy implementation didn't take the advantage of structure of \(A\) - a rank-2 matrix constructed via \(u\) and \(v\), therefore, the complexity using numpy is greater than our implementation and the time taken is indeed longer.
 
 \section{Adjoints and Hermitian Matrices}%
 
-We firstly skip the definition of adjoints and Hermitian matrices since they are straightforward enough. Then we see the proof of \textbf{theorem 1.15}, which states:
+We firstly skip the definition of adjoints and Hermitian matrices since they are straightforward enough. Then we see the proof of \href{https://comp-lin-alg.github.io/L1_preliminaries.html#adjoints-and-hermitian-matrices}{Theorem 1.15}, which states:
 \[ 
   (AB)^{*} = B^{*}A^{*}, A \in \mathbb{C}^{m \times n}, B \in \mathbb{C}^{n \times l}
 .\] 
@@ -488,7 +509,7 @@ And the proof should be simple.
     .\]
   \item Therefore, we finally have $(AB)^{*} = B^{*}A^{*}$.
 \end{itemize}
-And then we could look at the following exercise implementing the required function \texttt{ABiC()}.
+And then we could look at the following exercise implementing the required function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises1.ABiC}{\texttt{exercises1.ABiC()}}.
 \subsection*{Exercise 1.16: Hermitian Matrices and Multiplication}%
 \addcontentsline{toc}{subsection}{Exercise 1.16: Hermitian Matrices and Multiplication}
 This exercises have several mini-questions for us to solve. The first part is mainly about proof with hermitian matrices, and the function implementation part is about the application. Let's see the proof exercise first.
@@ -497,8 +518,10 @@ This exercises have several mini-questions for us to solve. The first part is ma
 
 \noindent Given that $A = B + iC \in \mathbb{C}^{m \times m}$ where $B, C$ are both real matrices with compatible dimensions, and  $A$ is hermitian, show that:
 \[
-  B = B^{T} \text{ and } C = -C^{T}
+  B = B^{\top} \text{ and } C = -C^{\top}
 .\]
+The answer is in the next page.
+\newpage
 \subsubsection*{Proof}
 \begin{itemize}
   \item Given that $A$ is hermitian then the property tells us:
@@ -519,7 +542,7 @@ This exercises have several mini-questions for us to solve. The first part is ma
     .\]
   \item Therefore,
     \[
-    B = B^{T} \text{ and } C = -C^{T}
+    B = B^{\top} \text{ and } C = -C^{\top}
     .\] 
 \end{itemize}
 \subsubsection*{Task 2}%
@@ -532,7 +555,13 @@ We required to compute the real and imaginary part of the matrix multiplication 
   \end{array}
 \right.
 .\] 
-Therefore, given a matrix $\hat{A}$ and $x_r, x_i$ where  $x = x_r + ix_i$, we need to implement our function \texttt{ABiC()}.
+Therefore, given a matrix $\hat{A}$ and $x_r, x_i$ where  $x = x_r + ix_i$, we need to implement the function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises1.ABiC}{\texttt{exercises1.ABiC()}} to get the real and imaginary parts of \(z = Ax\). \medskip
+
+\noindent Note: you should use \textbf{column-space formulation only} when multiplying matrices and vectors. If you forget about the column-space formulation, check the exercise \ref{ex1.2}.\medskip
+
+\noindent 
+Pause at here for a moment to think about your implementation step by step. Feel free to read the instructions in the next page if you get confused.
+\newpage
 \subsubsection*{What to do}
 \begin{enumerate}
 \item Since we don't have contents of $A = B + iC$ as required, we could firstly try to get contents in $B$ and $C$ from $\hat{A}$.
@@ -553,12 +582,11 @@ Therefore, given a matrix $\hat{A}$ and $x_r, x_i$ where  $x = x_r + ix_i$, we n
    \]
    where $z_r$ and $z_i$ could be easily seen.
 \end{enumerate}
-\subsubsection*{Code Implementation}%
-Now the implementation should be clear, additional details are stated in comments.
-\lstinputlisting[language=Python, firstline=102, lastline=124]{./python/exercise1.py}
+\textbf{Remember to check your implementation pass the provided test cases.}
+
 \section{Inner Products and Orthogonality}%
 The idea of these two concepts are very simple but they are extremely important in computational linear algebra. We would leave the proof of showing inner map is bilinear as an exercise here.
-
+\newpage
 \subsubsection*{Proof}%
 \begin{itemize}
   \item Considering $f(x, y) = x^{*}y$, we firstly show the inner map is linear respect to $x$ by deriving $f(\alpha x + x', y)$:
@@ -574,6 +602,12 @@ The idea of these two concepts are very simple but they are extremely important 
   \item Clearly the inner map is linear with respect to  $x$, and similarly the part about $y$ could be shown in a similar way.
   \item Therefore we could see the inner map is bilinear.
 \end{itemize}
+
+\bigskip
+
+\begin{center}
+  \textit{\large End of Week 1}
+\end{center}
 \newpage
 \section{Orthogonal Components of a Vector}%
 Given that we have a orthonormal set of vectors $S = \{q_1, q_2, \ldots, q_n\} $ where $q_i \in \mathbb{C}^{m}$, and for any vector $v \in \mathbb{C}^{m}$, we have:
@@ -594,19 +628,18 @@ We would discuss this later in next chapter for $QR$ decomposition.
 Given a vector $v$ and an orthonormal set $Q$, we were asked to write $v$ as a sum of linear combination of elements in $Q$ \textbf{and} the residual vector $r$.
 
 \medskip
-\noindent The function $\texttt{orthog\_cpts()}$ would do this work. It returns the coefficients $u$ in the linear combination, and the residual vector $r$. Our work is to implement this function.\subsubsection*{What to do}%
+\noindent The function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.orthog_cpts}{\texttt{exercises2.orthog\_cpts()}} would do this work. It returns the coefficients $u$ in the linear combination, and the residual vector $r$. Your work is to implement this function.\subsubsection*{What to do}%
 \begin{enumerate}
 \item Recall that
   \[
     v = r + \sum_{i=1}^{n} (q^{*}_i v)q_i
   .\]
   We know that the coefficients $u_i$ comes from the inner product between $q_i$ and $v$ where $u_i = q^{*}_iv$.
-\item And what we need to do is just keep substracting compoents of $q_i$ from $v$ (should be $u_iq_i$), until all orthogonal components are removed from  $v$, then we would get our  $r$.
+\item And what we need to do is just keep subtracting compoents of $q_i$ from $v$ (should be $u_iq_i$), until all orthogonal components are removed from  $v$, then we would get our  $r$.
+\item Think about it: can you get \(u, r\) without using loops? (You might use matrix multiplications, i.e. "vectorized" operations instead.)
+\item Note that implementations with \textbf{too many loops} may get your \textbf{mark down} during marking process. Sometimes using only one loop might be counted as "too much" as well.
 \end{enumerate} 
-\subsubsection*{Code Implementation}%
-\lstinputlisting[language=Python, firstline=6, lastline=23]{./python/exercise2.py}
-The code should be self-intuitive enough for you to understand.
-\bigskip
+\textbf{Remember to check your implementation pass the provided test cases.}
 \section{Unitary Matrices}%
 The definition, theorem and proof stated in the master notes in this section is clear enough, and I would like to emphasize one useful trick dealing with unitary matrices:
 \[
@@ -616,24 +649,22 @@ and $Q^{*} = Q^{-1}$ could be interpreted as a change of orthogonal basis.
 \subsection*{Exercise 1.23: Solve the System $Qx=b$}
 \addcontentsline{toc}{subsection}{Exercise 1.23: Solve the System $Qx=b$ with Unitary Matrices}
 \subsubsection*{Problem Description}%
-Given a square \textbf{unitary} matrix $Q$ and a vector $b$, find the vector $x$ satisfies $Qx = b$ without using inverses of $Q$ in the implementation of \texttt{solveQ()}.
+Given a square \textbf{unitary} matrix $Q$ and a vector $b$, find the vector $x$ satisfies $Qx = b$ without using inverses of $Q$ in the implementation of \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.solveQ}{\texttt{solveQ()}}.
 
 \subsubsection*{What to do}%
 \begin{enumerate}
 \item Since we are not allowed to use inverses, and $Q$ is unitary, as we stated above, we could replace $Q^{-1}$ by $Q^{*}$ then $x = Q^{-1}b = Q^{*}b$.
 \item Then $Q^{*}$ could be easily represented as the combination of transposing the conjugate of matrix $Q$ via \texttt{numpy} operations.
 
-(Hint: try to consider \texttt{numpy.conj()} and \texttt{numpy.ndarray.T}).
+(Hint: try to consider \texttt{numpy.conj()} and \texttt{Q.T} as transpose of \texttt{Q}).
 \item Then we could simply get $x = Q^{*}b$ and implement the function.
 \end{enumerate}
+\textbf{Remember to check your implementation pass the provided test cases.}
 
-\subsubsection*{Code Implementation}
-\lstinputlisting[language=Python, firstline=26, lastline=31]{./python/exercise2.py}
-
-\subsubsection*{Efficiency Measuring}%
+\subsubsection*{Efficiency Measuring (Non-assessed part for this exercise)}%
 To test the performance of function efficiency for random matrices with different sizes (compared with the general purpose \texttt{numpy.linalg.solve()}), we have the following code:
-\lstinputlisting[language=Python, firstline=34, lastline=48]{./python/exercise2.py}
-Here I pass an \texttt{lambda} to the \texttt{timeit.Timer} constructor rather than an pre-defined helper (timeable) function for code simplicity, and I can also pass variables to either \texttt{solveQ()} and \texttt{numpy.linalg.solve()} as I want.
+\lstinputlisting[language=Python, firstline=17, lastline=31]{./python/exercise2.py}
+Here I pass an \texttt{lambda} (i.e. a "function call" with explicit arguments \texttt{Q} and \texttt{b}) to the \texttt{timeit.Timer} constructor rather than an pre-defined helper (timeable) function for code simplicity, and I can also pass variables to either \texttt{solveQ()} and \texttt{numpy.linalg.solve()} as I want.
 
 \medskip
 \noindent Since we use adjoint matrices rather than inverses, which reduces a certain amount of operations in finding inverses, so I would expect \texttt{solveQ()} would take less time than general purpose \texttt{solve()}. And the python console gives me the following result:
@@ -664,7 +695,7 @@ Timing for general purpose solve
 We could easily see that our implementation is more efficient than the general purpose \texttt{solve()}, given that the matrix is unitary.
 
 \medskip
-\noindent Note: The explanation of vector norms in \textbf{master notes 1.8} is clear enough so I would not cover this in my commentary.
+\noindent Note: The explanation of vector norms in \href{https://comp-lin-alg.github.io/L1_preliminaries.html#vector-norms}{master notes 1.8} is clear enough so I would not cover this in my commentary.
 
 \section{Projectors and Projections}%
 The concept of projector is self-intuitive, but the relations between projector $P$ and its complementary projector are still worth mentioning.
@@ -676,44 +707,45 @@ The concept of projector is self-intuitive, but the relations between projector 
     \[
       Pv = P(Px) = P^2x = Px = v
     .\]
-    we could see projector $P$ doesn't change vectors in its range.(see \textbf{Figure 1.3(a)}).
+    we could see projector $P$ doesn't change vectors in its range. (see \autoref{inrange}).
   \item Suppose $v \not\in \text{range}(P)$, considering the vector $Pv - v$:
      \[
        P(Pv - v) = P^2v - Pv = Pv - Pv = 0
     .\]
-    Here we could say $Pv - v$ is the nullspace of $P$, shown in  \textbf{Figure 1.3(b)}.
+    Here we could say $Pv - v$ is the nullspace of $P$, shown in \autoref{outrange}.
   \begin{figure}[H]
     \centering
   \captionsetup[subfigure]{justification=centering}
   \begin{subfigure}[b]{0.5\textwidth}
     \centering
-  \begin{tikzpicture}[scale=0.8,transform shape]
-    \draw[->] (-3, 0) -- (3, 0) ;
-    \draw[->] (0, -3) -- (0, 3) ;
-    \draw (-3, 1.5) -- (3, -1.5) node[above] at (3, -1.25) {$\text{range}(P)$};
-     \draw[->, red](0, 0.05) -- (-2, 1.05) node[above] {$v$};   
-     \draw[->, cyan](0, -0.05) -- (-2, 0.95) node[below] {$Pv$};
-  \end{tikzpicture}
-  \caption{$v \in \text{range}(P)$}%
+    \begin{tikzpicture}[scale=0.8,transform shape]
+      \draw[->] (-3, 0) -- (3, 0) ;
+      \draw[->] (0, -3) -- (0, 3) ;
+      \draw (-3, 1.5) -- (3, -1.5) node[above] at (3, -1.25) {$\text{range}(P)$};
+      \draw[->, red](0, 0.05) -- (-2, 1.05) node[above] {$v$};   
+      \draw[->, cyan](0, -0.05) -- (-2, 0.95) node[below] {$Pv$};
+    \end{tikzpicture}
+    \caption{$v \in \text{range}(P)$}%
+    \label{inrange}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.4\textwidth}
       \centering
       \begin{tikzpicture}[scale=0.8,transform shape]
-    \draw[->] (-3, 0) -- (3, 0) ;
-    \draw[->] (0, -3) -- (0, 3) ;
-    \draw (-3, 1.5) -- (3, -1.5) node[above] at (3, -1.25) {$\text{range}(P)$};
-    \coordinate (A) at (-1.5, 2) {};
-    \coordinate (B) at (-1.8, 0.9) {};
-    \coordinate (0) at (0, 0) {};
-    \draw[->, red](0) -- (A) node[above] at (-0.75, 1.5) {$v$};   
-    \draw[->, cyan](0) -- (B) node[below] at (-1.5, 0.75) {$Pv$};
-    \draw[->](A) -- (B) node[left] at (-1.75, 1.75) {$Pv - v$};
-    \draw[dotted](A) -- (-1.2, 3.1);
-    \draw[dotted](A) -- (-2.4, -1.3) node[left] at (-2.5, -0.5) {$\text{null}(P)$};
-    %\draw [right angle quadrant=2, right angle symbol={A}{B}{0}];
+        \draw[->] (-3, 0) -- (3, 0) ;
+        \draw[->] (0, -3) -- (0, 3) ;
+        \draw (-3, 1.5) -- (3, -1.5) node[above] at (3, -1.25) {$\text{range}(P)$};
+        \coordinate (A) at (-1.5, 2) {};
+        \coordinate (B) at (-1.8, 0.9) {};
+        \coordinate (0) at (0, 0) {};
+        \draw[->, red](0) -- (A) node[above] at (-0.75, 1.5) {$v$};   
+        \draw[->, cyan](0) -- (B) node[below] at (-1.5, 0.75) {$Pv$};
+        \draw[->](A) -- (B) node[left] at (-1.75, 1.75) {$Pv - v$};
+        \draw[dotted](A) -- (-1.2, 3.1);
+        \draw[dotted](A) -- (-2.4, -1.3) node[left] at (-2.5, -0.5) {$\text{null}(P)$};
       \end{tikzpicture}
       \caption{$v \notin \text{range}(P)$}
+      \label{outrange}
     \end{subfigure}
     \caption{Projecting $v$ with projector $P$}
   \end{figure}
@@ -806,7 +838,7 @@ Important things for projector $P$:
     .\]
     which contradicts our assumption $v_i \neq v_i'$, so the vector pair $(v_1, v_2)$ should be unique.
     \item Therefore, we could find a unique decomposition of $v$ into two components $v_1, v_2$ in  $S_1$ and $S_2$. 
-    \item Since we take $v$ arbitrarily, and the components  $v_1, v_2$ in corresponding subspaces $S_1, S_2$ could be written as $Pv$ and  $(I - P)v$ for all chosen $v$, (which are both \textbf{bijections}). So we could say there exists a projector  $P$ such that range$(P) = S_1$ and null$(P) = S_2$.
+    \item Since we take $v$ arbitrarily, and the components  $v_1, v_2$ in corresponding subspaces $S_1, S_2$ could be written as $Pv$ and  $(I - P)v$ for all chosen $v$, (which are both \textbf{bijection}). So we could say there exists a projector  $P$ such that range$(P) = S_1$ and null$(P) = S_2$.
 \end{itemize}
 
 
@@ -815,7 +847,7 @@ We have known the definition of projectors, but how about the orthogonal project
 \[
 \forall v \in \mathbb{C}^{m}, (Pv)^{*}(Pv - v) = 0
 .\] 
-This definition might still be too abstract, so we put the definition into the following \textbf{Figure 1.4} :
+This definition might still be too abstract, so we put the definition into the following \autoref{orthogproj}:
   \begin{figure}[H]
     \centering
     \begin{tikzpicture}[scale=0.78,transform shape]
@@ -833,6 +865,7 @@ This definition might still be too abstract, so we put the definition into the f
     \draw [right angle quadrant=2, right angle symbol={A}{B}{0}];
       \end{tikzpicture}
     \caption{Projecting $v$ with Orthogonal Projector $P$}
+    \label{orthogproj}
   \end{figure}
 
 \noindent We could see the projector $P$ splits $v$ into two components,  $Pv$ and  $Pv - v$. However, in this case these two components are orthogonal to each other, and computationally, their inner product should be 0. That's where the definition of  \textbf{orthogonal} projector comes from. 
@@ -842,7 +875,7 @@ This definition might still be too abstract, so we put the definition into the f
 \bigskip
 \noindent Now we know the definition of an orthogonal projector, but how do we construct an orthogonal projector? \textbf{In this course, we are introduced to construct from a set of orthonormal vectors.} 
 \begin{itemize}
-\item From the knowledge we get in \textbf{section 1.10, commentary notes}, we know that, given we have a set of orthonormal vectors $\{q_1, q_2, \ldots, q_n\}$, for all vector $v \in \mathbb{C}^{m}$, we could write $v$ in terms of:
+\item From the knowledge we get in \href{https://comp-lin-alg.github.io/L1_preliminaries.html#constructing-orthogonal-projectors-from-sets-of-orthonormal-vectors}{section 1.10} master notes, we know that, given we have a set of orthonormal vectors $\{q_1, q_2, \ldots, q_n\}$, for all vector $v \in \mathbb{C}^{m}$, we could write $v$ in terms of:
   \[
     v = r + \sum_{i = 1}^{n} (q_iq_i^{*})v
   .\] 
@@ -867,7 +900,7 @@ P \text{ orthogonal } \implies P = \hat{Q}\hat{Q}^{*}
   \[
     \hat{Q}\hat{Q}^* = \begin{pmatrix} q_1 & q_2 & \ldots & q_n \end{pmatrix} \begin{pmatrix} q_1^{*}\\ q_2^{*} \\\vdots\\ q_n^{*} \end{pmatrix} = q_1q_1^* + q_2q_2^* + \ldots + q_nq_n^{*} =  \sum_{i=1}^{n} (q_iq_i^{*})
   .\]
-  which is exactly what we see in the construction of the orthogonal projector $P$. \textbf{Personally I think all of us should understand the proof at this level.}
+  which is exactly what we see in the construction of the orthogonal projector $P$. \textbf{Personally I think all of you should understand the proof at this level.}
 \item Also, in the light of change of basis, the product $\hat{Q}^*v$ gives the coefficients of $v$ after projecting along the columns of  $\hat{Q}$, and the multiplication of $\hat{Q}$ on $\hat{Q}^*v$ gives the projections of $v$ expanded in the canonical basis. 
   \item Therefore, the multiplication by $\hat{Q}\hat{Q}^*$ does the same job as the orthogonal projector $P$ does. We could finally confirm that the orthogonal projectors has a simple form  $P  = \hat{Q}\hat{Q}^{*}$. 
   \item \textbf{Note:} the last two parts of the proof are mentioned under \textbf{Theorem 1.28 master notes}, and I think it is not necessary to memory by heart but would give you a deeper understanding if digest them.
@@ -910,15 +943,21 @@ Since any orthogonal projector has the form $P = \hat{Q}\hat{Q}^*$, we have the 
 \subsection*{Exercise 1.30 Constructing Orthogonal Projectors}
 \addcontentsline{toc}{subsection}{Exercise 1.30 Constructing Orthogonal Projectors}
 \subsubsection*{Problem Description}%
-This exercise is a relatively easy one - given an orthonormal set of vectors $Q$, we need to compute an orthogonal projector  $P$ which projects vectors to the subspace spanned by elements of  $Q$.
+This exercise is a relatively easy one - given an orthonormal set of vectors $Q$, we need to implement a function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.orthog_proj}{\texttt{exercises2.orthog\_proj()}} to compute an orthogonal projector $P$, which projects vectors to the subspace spanned by elements of  $Q$.
 \subsubsection*{What to do}%
-We just need to use the construction of orthogonal projector $P = \hat{Q}\hat{Q}^*$, and in this exercise we can easily use our provided $Q$ as the orthonormal matrix. The code implementation goes as follows (should be straightforward enough):
+We just need to use the construction of orthogonal projector $P = \hat{Q}\hat{Q}^*$, and in this exercise we can easily use our provided $Q$ as the orthonormal matrix. The code implementation should be straightforward enough. \medskip
 
-\subsubsection*{Code Implementation}%
-\lstinputlisting[language=Python, firstline=51, lastline=59]{./python/exercise2.py}
-
+\noindent \textbf{Remember to check your implementation pass the provided test cases.}
+\subsubsection*{What happens next}%
 \noindent After learning all the basic things in this chapter, the exited things finally would come in the following chapters \ldots! Next chapter would be based on the knowledge of orthogonal projectors and we would talk about \textbf{QR factorisation}. 
 
+\bigskip
+
+\begin{center}
+  \textit{\large \st{End of Week 1 (we haven't finish this week yet!)}} \\
+  \medskip
+  \textit{\large End of Chapter 1}
+\end{center}
 
 
 

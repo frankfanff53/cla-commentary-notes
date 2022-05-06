@@ -4,31 +4,14 @@ import timeit
 
 
 def orthog_cpts(v, Q):
-    """
-    Given a vector v and an orthonormal set of vectors
-    q_1,...q_n, compute v = r + u_1q_1 +  ... + u_nq_n
-    for scalar coefficients u_1, u_2, ..., u_n and
-    residual vector r.
-    """
-    r, u = v.copy(), np.array([])
-
-    for i in range(len(Q[0])):
-        qi = Q[:, i]
-        # Find the scale factor of q_i in v,
-        # and remove the orthogonal component.
-        ui = np.conj(qi).dot(v)
-        r -= ui * qi
-        u = np.append(u, [ui])
-
+    u = np.conj(Q).T @ v
+    r = v - Q @ u
     return r, u
 
 
 def solveQ(Q, b):
-    """
-    Given a unitary mxm matrix Q and a vector b,
-    solve Qx=b for x.
-    """
-    return np.conj(Q).T.dot(b)
+    # Qx = b => Q^*Qx = Q^*b => x = Q^*b since Q unitary.
+    return np.conj(Q).T @ b
 
 
 import timeit
@@ -49,13 +32,7 @@ def time_solveQ():
 
 
 def orthog_proj(Q):
-    """
-    Given a vector v and an orthonormal set of vectors
-    q_1,...q_n, compute the orthogonal projector P
-    that projects vectors onto the subspace
-    spanned by those vectors.
-    """
-    return Q.dot(np.conj(Q).T)
+    return Q @ np.conj(Q).T
 
 
 def orthog_space(V):

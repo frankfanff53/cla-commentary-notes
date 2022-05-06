@@ -1,0 +1,65 @@
+I didn't usually give out my code as sample solution. If you could see this part, then you have my greatest trust of making good use of my work. Hope this would help. \medskip
+
+\noindent Here I would not emphasize on the mathematical background behind the code, since they should be mentioned in the hints of each exercise. I would share my comment focusing on writing concise and fluent code to give you some idea of improving code efficiency and readability.
+
+\section{Exercises 1}
+
+\subsection{Implementation of \texttt{basic\_matvec()}}
+\lstinputlisting[language=Python, firstline=17, lastline=28]{./python/exercise1.py}
+You might notice that, unlike using empty list and initialize \(b_i\) in each loop in the exercise hint, I used \texttt{np.zeros} to initialize an all-zero vector as my initial \(b\), so there is no need to add an extra line to set \(b_i = 0\) and append final calculated \(b_i\) to \(b\). Instead we just update the elements in \(b\) and return it once the loop terminates.
+\newpage
+\subsection{Implementation of \texttt{column\_matvec()}}
+\lstinputlisting[language=Python, firstline=31, lastline=36]{./python/exercise1.py}
+You might think using \texttt{for i in range(len(A))} is also correct - indeed, but then you need to get entries of \(x\) via x[i] and the nested brackets with \texttt{range()} and \texttt{len()} are not concise enough for readers.
+\medskip
+
+\noindent 
+We use \href{https://realpython.com/python-enumerate/}{\texttt{enumerate()}} instead for better readability. If you are not familiar with \texttt{enumerate()}, you can think \texttt{enumerate()} converts a sequence of elements \texttt{\{'a', 'b', \ldots, 'z'\}} (Note: this doesn't mean the sequence is a \texttt{set()} object in python.) 
+to a sequence of \texttt{(index, element)} pair \texttt{\{(0, 'a'), (1, 'b'), \ldots, (25, 'z')\}}. \medskip
+
+\noindent Here is an example:
+\lstinputlisting[language=Python, firstline=38, lastline=40]{./python/exercise1.py}
+And the output would be:
+\begin{lstlisting}
+0 a
+1 b
+2 d
+3 c
+\end{lstlisting}
+\subsection{Implementation of \texttt{rank2()}}
+\lstinputlisting[language=Python, firstline=43, lastline=50]{./python/exercise1.py}
+Don't panic if you see the "@" operator and have no idea about it. This is the matrix multiplication operator introduced since Python 3.5 (I hope you are all able to use this). It is definitely a cool and concise operator and I really recommend you to use this rather than methods like \texttt{matmul()} or \texttt{dot()}.
+\newpage
+\subsection{Implementation of \texttt{rank1pert\_inv()}}
+\lstinputlisting[language=Python, firstline=53, lastline=56]{./python/exercise1.py}
+\subsection{Implementation of \texttt{ABiC()}}
+\lstinputlisting[language=Python, firstline=80, lastline=97]{./python/exercise1.py}
+You might be confused with \texttt{m, \_ = Ahat.shape}, and there is nothing to worry about. Let me show you an example:
+\begin{itemize}
+    \item Firstly, if \(A\) is a \(m \times  n\) numpy array(or say matrix), when we use \texttt{A.shape}, the code would return a tuple \((m, n)\). And if we want to let \(a = m, b = n\), the naive way is to assign them separately, using:
+    \[
+    \begin{array}{c}
+        \texttt{a = A.shape[0]} \\
+        \texttt{b = A.shape[1]}
+    \end{array}
+    \]
+    \item But we could write this in a more elegant way, using:
+    \[
+        \texttt{a, b = A.shape}
+    \]
+    where \texttt{A.shape} returns a tuple \(m, n\) and the assignment \texttt{a, b = A.shape} unpack the tuple and assign the values separately in one line.
+    \item However, if we only want one dimension e.g. \(m\) and we don't want to bothered with indexing issues (like whether indexing in python starts from 0 or 1), we could use the code style above, and replace the unwanted variable with an \texttt{"\_"}, representing as:
+    \[
+        \texttt{a, \_ = A.shape}
+    \]
+\end{itemize}
+
+\section{Exercises 2}
+\subsection{Implementation of \texttt{orthog\_cpts()}}
+\lstinputlisting[language=Python, firstline=6, lastline=9]{./python/exercise2.py}
+
+\subsection{Implementation of \texttt{solveQ()}}
+\lstinputlisting[language=Python, firstline=12, lastline=14]{./python/exercise2.py}
+
+\subsection{Implementation of \texttt{orthog\_proj()}}
+\lstinputlisting[language=Python, firstline=34, lastline=35]{./python/exercise2.py}
