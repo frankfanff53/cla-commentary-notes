@@ -74,7 +74,7 @@ Implement this as a function \href{https://comp-lin-alg.github.io/cla_utils.html
   \item And the basis of $U$ could be easily seen by the columns of $\hat{Q}$. So if we find the vectors orthogonal to all column vectors in $\hat{Q}$, we should find the basis of the orthogonal complement of $U$.
   \item Go back to step 2 and see if you can find vectors orthogonal to columns of \(\hat{Q}\) from some certain matrices. Make the implementation in Python.
 \end{enumerate}
-
+\noindent \textbf{Remember to check your implementation pass the provided test cases.}
 \subsubsection*{Spoil Alert\ldots There is a way you could figure out the problem}%
 \label{ssub:analysis}
 Here we have some explanation to this implementation:
@@ -174,3 +174,12 @@ where
   \right.
 .\]
 And then the explicit algorithm of QR factorisation via classical Gram-Schmidt should be very straightforward. You can find it \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#qr-factorisation-by-classical-gram-schmidt-algorithm}{here} from master notes and step in to the very first implementation exercise of QR.
+
+\subsection*{Exercise 2.4: Implement the Gram-Schmidt Algorithm}
+\addcontentsline{toc}{subsection}{Exercise 2.4: Implement the classical Gram-Schmidt Algorithm}
+\subsubsection*{Problem Description}%
+Here you need to implement the classical Gram-Schmidt algorithm from the derivation above in your function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_classical}{\texttt{exercises2.GS\_classical()}}. Note that instead returning matrices \(Q\) and \(R\) from the function, you need to change original matrix \(A\) to \(Q\) 'in-place', and return \(R\) only.
+\subsubsection*{What to do}
+There is not too much to say about this exercise. Try using 'vectorized' operations in your implementation, e.g. matrix multiplication rather than additional loops. \medskip
+
+\noindent \textbf{Remember to check your implementation pass the provided test cases.}
