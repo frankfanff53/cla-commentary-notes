@@ -1,0 +1,110 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{amsmath, amssymb}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{bookmark}
+\usepackage{authblk}
+\usepackage{mathpazo}
+\usepackage{soul}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\title{Numpy Cheat Sheet}
+\author{}
+\date{}
+\maketitle
+\subsection*{Matrix Initialisation \& Construction}
+\begin{tabular}{p{9cm} |p{5cm}}
+Task & Code Snippet \\
+\hline \\
+Convert a list $a$ to a \texttt{numpy} array & \texttt{np.array(a)} \\
+Create an identity matrix \(I_m\) & \texttt{np.eye(m)}  \\
+Create an empty array with length $m$ & \texttt{np.empty(m)}  \\
+Create an empty matrix with dimension $m \times  n$ & \texttt{np.empty((m, n))}\\
+Create an zero vector (array) with length \(m\) & \texttt{np.zeros(m)} \\
+Create an zero matrix with dimension \(m \times n\)& \texttt{np.zeros((m, n))}\\
+Create a random array with length $m$ & \texttt{np.random.randn(m)}  \\
+Create a random matrix with dimension \(m \times n\)& \texttt{np.random.randn(m, n)}\\
+Create a diagonal matrix $A$ with diagonal vector $a$ &  \texttt{A = np.diag(a)} \\
+\end{tabular}
+\subsection*{Getting \& Setting Elements from Matrices}
+\begin{tabular}{p{9cm} |p{5cm}}
+  Task & Code Snippet \\
+  \hline \\
+Get the $i$ th element of vector (array) $a$ & \texttt{a[i]} \\
+Get the $(i, j)$ th entry of matrix $A$,  $a_{ij}$ &  \texttt{A[i, j]}\\
+Get the $i$ th row of matrix $A$ & \texttt{A[i]} \\
+Get the $i$ th column of matrix $A$ &  \texttt{A[:, i]}\\
+Set the $i$ th element of vector (array) $a$ to $b$ & \texttt{a[i] = b} \\
+Set the $(i, j)$ th entry of matrix $A$,  $a_{ij}$ to $u$&  \texttt{A[i, j] = u}\\
+Set the $i$ th row of matrix $A$ to $u$ & \texttt{A[i] = u}\\
+Set the $i$ th column of matrix $A$ to $u$ & \texttt{A[:, i] = u} \\
+\end{tabular}
+\newpage
+\subsection*{Getting Fragments from Matrices}
+\begin{tabular}{p{9cm} | p{5cm}}
+  Task & Code Snippet \\
+  \hline \\
+  Get the upper triangular part of matrix $A$ &  \texttt{np.triu(A)} \\
+  Get the upper triangular part of matrix $A$ without main diagonal&  \texttt{np.triu(A, 1)} \\
+  Get the lower triangular part of matrix $A$ &  \texttt{np.tril(A)}\\
+  Get the lower triangular part of matrix $A$ without main diagonal &  \texttt{np.tril(A, -1)} \\
+  Get the main diagonal of matrix $A$ as a vector $a$  &  \texttt{a = np.diag(A)} \\
+\end{tabular}
+\subsection*{Matrix Computation}
+\begin{tabular}{p{10cm} |p{5cm}}
+  Task & Code Snippet \\
+  \hline \\
+  Compute product of Matrix-Vector multiplication, $Ax$ & \texttt{A} @ \texttt{x}  \\
+  Compute product of Matrix-Matrix multiplication, $AB$ & \texttt{A} @ \texttt{B}  \\
+  Compute dot (inner) product for real vectors $u$ and $v$, $u^{\top}v$ &  \texttt{u.dot(v)}\\
+  Compute outer product for real vectors $u$ and  $v$,  $uv^{\top}$ & \texttt{np.outer(u, v)}\\
+  Compute inner product for complex vectors $u$ and  $v$, $u^{*}v$ & \texttt{u.dot(np.conj(v))} \\
+  Compute outer product for complex vectors $u$ and  $v$,  $uv^{*}$ & \texttt{np.outer(u, np.conj(v))}\\
+  Compute the sum of elements in vector \(a\) & \texttt{np.sum(a)} \\
+  Compute the product of elements in vector \(a\) & \texttt{np.prod(a)} \\
+  Compute the maximum of element in vector \(a\) & \texttt{np.max(a)} \\
+  Compute the minimum of element in vector \(a\) & \texttt{np.min(a)} \\
+  Compute the index of maximum of element in vector \(a\) & \texttt{np.argmax(a)} \\
+  Compute the index of minimum element in vector \(a\) & \texttt{np.argmin(a)} \\
+\end{tabular}
+\newpage
+\subsection*{Transforming Matrices}
+\begin{tabular}{p{10cm} |p{5cm}}
+  Task & Code Snippet \\
+  \hline \\
+Get the transpose of matrix $A$,  $A^{\top}$ & \texttt{A.T} \\
+Get the hermitian conjugate of matrix $A$,  $A^{*}$ & \texttt{np.conj(A.T)} \\
+Get the complex conjugate of a complex number $a$ & \texttt{np.conj(a)}\\
+Get the complex conjugate of a complex vector (array) $a$ &  \texttt{np.conj(a)}\\
+Get the complex conjugate of a complex matrix $A$ &  \texttt{np.conj(A)} \\
+Get the col-augmented matrix of matrices \(A\) and \(B\), \([A | B]\) & \texttt{np.column\_stack((A, B))} \\
+Get the row-augmented matrix of matrices \(A\) and \(B\), \([\frac{A}{B}]\) & \texttt{np.row\_stack((A, B))} \\
+Transform a \(m \times  n\) matrix \(A\)  to dimension \(k \times  p\) & \texttt{A.reshape((k, p))} 
+\end{tabular}
+\subsection*{Others}
+\begin{tabular}{p{10cm} |p{5cm}}
+  Task & Code Snippet \\
+  \hline \\
+  Compare if two matrices \(A\) and \(B\) are equal & \texttt{np.allclose(A, B)} \\
+  Get a copy of matrix \(A\)  & \texttt{np.copy(A)} \\
+  Compute the inverse of matrix \(A\) & \texttt{np.linalg.inv(A)} \\
+  Compute the determinant of matrix \(A\) & \texttt{np.linalg.det(A)} 
+\end{tabular}
+
+\subsection*{Don't use unless you are asked to do so}
+You would better not use these functions in your exercises (since you would get a mark down if you use them), use your own implementation instead. \medskip
+
+\noindent \begin{tabular}{p{10cm} |p{5cm}}
+  Task & Code Snippet \\
+  \hline \\
+Get the norm of vector \(a\) & \texttt{np.linalg.norm(A)} \\
+Find the complete QR Factorisation of matrix \(A\) & \texttt{np.linalg.qr(A, 'complete')} \\
+Find the reduced QR Factorisation of matrix \(A\) & \texttt{np.linalg.qr(A)}  \\
+Find eigenvalues and eigenvectors \(w, v\) of matrix \(A\)  & \texttt{w, v = np.linalg.eig(A)} \\
+Find the solution to equation \(Ax = b\)  & \texttt{np.linalg.solve(A, b)} \\
+\end{tabular}
+
+\end{document}
