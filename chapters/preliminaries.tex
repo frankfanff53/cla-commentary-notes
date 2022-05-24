@@ -1,9 +1,40 @@
-\section{Matrix-Vector Multiplication}%
+\subsection*{Material Correspondence Table}
+I reconstructed the original study material by dividing some parts into smaller sections to make a step-by-step approach of the content in the notes. \smallskip
 
-\textbf{This part might be too easy for most of you - but it would still give you intuition in the contents we would discuss later.} From the master notes we are given that:
+\noindent If you want to see correspondence of the materials between the original and commentary notes, here is a table indicating the relations: \bigskip
+
+\noindent 
+\begin{tabular}{ll}
+  Master Notes & Commentary Notes \\
+  \hline \\
+  1.1. Matrices, vectors and matrix-vector multiplication & Section 1.1 - 1.3 \\
+  1.2. Range, nullspace and rank & Section 1.4 - 1.6 \\
+  1.3. Invertibility and inverses & Section 1.7  \\
+  1.4. Adjoints and Hermitian matrices & Section 1.8 \\
+  1.5. Inner products and orthogonality & Section 1.9 \\
+  1.6. Orthogonal components of a vector & Section 1.10\\
+  1.7. Unitary matrices & Section 1.11  \\
+  1.8. Vector norms & Section 1.3\\
+  1.9. Projectors and projections &  Section 1.12 \\
+  1.10. Constructing orthogonal projectors  & Section 1.13
+  \end{tabular}
+\newpage
+\section{Matrix-Vector Multiplication}%
+\textbf{This part might be too easy for most of you - but it would still give you intuition in the contents we would discuss later.}\medskip
+
+\noindent Note that in this course we would discuss \textbf{vectors in \(\mathbb{C}^{n}\) rather than \(\mathbb{R}^{n}\)}, so some vector operations would be different from those you get used to. You would see the details as we going through the course.
+\subsection*{Content Checklist}
+\noindent In this section we would:
+\begin{itemize}
+  \item Recap on deriving \textbf{Matrix-Vector multiplication formula}. 
+  \item Recap on showing \textbf{linearity} of matrix multiplications. 
+  \item \textbf{Implement a Python function} for M-V multiplication.
+\end{itemize}
+\subsection*{Contents}
+Suppose we are given that:
 \[
-x = \begin{pmatrix} x_1\\x_2\\ \vdots\\ x_n \end{pmatrix} \text{, and } x \in \mathbb{C}^{n}
-.\]
+x = \begin{pmatrix} x_1\\x_2\\ \vdots\\ x_n \end{pmatrix} \in \mathbb{C}^{n}
+\]
 and
 \[
   A = \begin{pmatrix} 
@@ -11,23 +42,27 @@ and
 a_{21} & a_{22} & \ldots & a_{2n} \\ 
 \vdots & \vdots & \ddots & \vdots \\
 a_{m1} & a_{m2} & \ldots & a_{mn} \\  
-\end{pmatrix} 
+\end{pmatrix} \in \mathbb{C}^{m \times n}
 .\] 
-And we are asked to consider the matrix multiplication $b = Ax$:
+Here we are asked to consider the result of matrix multiplication $b = Ax$.
 \begin{itemize}
   \item The first thing we could confirm is $b \in \mathbb{C}^{m}$ by dimensions of the given matrices.
-  \item Then speaking about the $i$th component of $b$, $b_i$ (\textbf{obviously, $1 \le i \le m$}), how do we determine the value of $b_i$ in general? 
+  \item Then speaking about the $i$th component of $b$, $b_i$ (obviously $1 \le i \le m$). How do we determine the value of $b_i$ in general? 
   \item Normally we get the $i$th row from our matrix $A$, and multiply with the column vector $x$ using matrix multiplication rules:
     \[
-    b_i = a_{i1}x_1 + a_{i2}x_2 + \ldots +  a_{in}x_n = \sum_{j = 1}^{n} a_{ij}x_j
+    b_i = a_{i1}x_1 + a_{i2}x_2 + \ldots +  a_{in}x_n
     .\]
-  where $i \in \{1, 2, 3 \ldots m\}$.
-    \item This is what we called Matrix-Vector multiplication. And as the master notes saying, we could check the map $x \to  Ax$ given by matrix multiplication is a linear map from $\mathbb{C}^{n} \to \mathbb{C}^{m}$. We need to show that:
-      \[
-        \forall x, y \in \mathbb{C}^{n}, \alpha \in \mathbb{C}, A(\alpha x + y) = \alpha A x + A y
-      .\]
-    \item This should be really straightforward.
+  \item To generalise it we have
+  \[
+    b_i = \sum_{j = 1}^{n} a_{ij}x_j, \text{ where } i \in \{1, 2, 3 \ldots m\}
+  .\]
+  \item And this is what we called Matrix-Vector multiplication. \checked
 \end{itemize}
+We could then check the map $x \to  Ax$ given by matrix multiplication is a linear map from $\mathbb{C}^{n} \to \mathbb{C}^{m}$. i.e.
+  \[
+    \forall x, y \in \mathbb{C}^{n}, \alpha \in \mathbb{C}, A(\alpha x + y) = \alpha A x + A y
+  .\]
+This should be really straightforward.
 \subsubsection*{Proof}
 \begin{itemize}
     \item Suppose $b = A(\alpha x + y)$, we compute the $i$th entry of $b$,  $b_i = [A(\alpha x + y)]_{i}$ via the formula above:
@@ -48,13 +83,12 @@ And we are asked to consider the matrix multiplication $b = Ax$:
       \[
         \implies A(\alpha x + y) = \alpha Ax + Ay
       .\]
-    \item Therefore, we could now confirm that the map $x \to Ax$ by multiplication is a linear map.
-    \item You have now seen the derivation of Matrix-Vector Multiplication formula and its property, but how do we implement this schema as a python function? Try Exercise 1.1!
+    \item Therefore, we could now confirm that the map $x \to Ax$ by multiplication is a linear map. \checked
 \end{itemize}
-
+You have now seen the derivation of Matrix-Vector Multiplication formula and its property, but how do we implement this schema as a python function? Let's try Exercise 1.1.
 \subsection*{Exercise 1.1: Basic M-V Multiplication}
 \addcontentsline{toc}{subsection}{Exercise 1.1: Basic M-V Multiplication}
-I assumed that all of you have set up the coding environment and obtained the skeleton code of the exercises. If not, see \href{https://comp-lin-alg.github.io}{here} for further instructions.
+I assumed that all of you have set up the coding environment and obtained the skeleton code of the exercises. If not, see \href{https://comp-lin-alg.github.io/exercises.html}{here} for further instructions.
 \subsubsection*{Problem Description}
 In this exercise, we are given matrix $A$ and vector $x$ as defined above. What we need to is implementing a function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises1.basic_matvec}{\texttt{exercises1.basic\_matvec()}}
 under the \texttt{cla\_utils} package, which returns the matrix-vector product $b = Ax$. We are asked to implement this with a \textbf{double-nested loop}.
@@ -74,30 +108,47 @@ under the \texttt{cla\_utils} package, which returns the matrix-vector product $
     .\] 
   \item There is a summation sign in the calculation of $b_i$, and it should indicate a \textbf{for} loop in the implementation of calculating a single $b_i$.
   \item \textbf{Note: We always relate the summation in mathematics and for loop in programming together, try to convince yourself that you really understand why we were allowed to do so.}
-  \item Also the basic 'algorithm' indicates that we would compute the value of $b_i$ for $m$ times, with the method described in the formula. Therefore, we shall need another \textbf{for} loop to compute all $m$ values of $b_i$. 
+  \item Also the basic 'algorithm' indicates that we would compute the value of $b_i$ for $m$ times to find the vector \(b\), with the method described in the formula. Therefore, we shall need another \textbf{for} loop to compute all $m$ values of $b_i$. 
   
   Now you should understand why a \textbf{double-nested for loop} is necessary for our implementation.
 \end{enumerate}
+\newpage
 \begin{itemize}
-   \item Therefore, the structure of our implementation should be:
-     \lstinputlisting[language=Python, firstline=1, lastline=14]{./python/exercise1.py}
+   \item Therefore, the most naive structure of our implementation should be:
+\begin{lstlisting}[language=Python]
+import numpy as np
+def basic_matvec(A, x):
+    # Get the dimensions of A
+    m, n = ...
+    # Initialise vector b as an empty list.
+    b = []
+    for i in range(m):
+        b_i = 0
+        # Compute the value of b_i.
+        for j in range(n):
+            # Apply the basic formula in summation.
+            b_i += ...
+        # Append the computed b_i to b.
+        b.append(b_i)
+    return np.array(b)
+\end{lstlisting}
 \end{itemize}
 \subsubsection*{Analysis}
     \begin{itemize}
     \item Then the implementation has been divided into two parts: compute the values of $b_i$ through the inner loop iterations, and add these values to the placeholder, a list $b$ as each inner loop ends.
-    \item The second part is very easy to implement, just append the computed $b_i$ to $b$ via \texttt{b.append(bi)} at the end of each iteration of the outer loop.
+    \item The second part is very easy to implement, just append the computed $b_i$ to $b$ via \texttt{b.append(b\_i)} at the end of each iteration of the outer loop.
     \item The first part is still straight-forward, but would take more effort in the implementation. To compute the value of $b_i$, we should initialize the value as 0 at first, i.e. \texttt{bi = 0}. Then we could go into the inner loop with counter $j$ to do the summation. 
     \item Then the 'elements' we need in the inner loop is kind of self-intuitive, since it is mentioned in the basic formula:
       \[
         \sum_{i = 1}^{n} \to \texttt{for j in range(n)}
       \] 
        \[
-         a_{ij} \to  \texttt{A[i, j]}
+         a_{ij} \to  \texttt{A[i][j]}
       \] 
       \[
         x_j \to  \texttt{x[j]}
       .\]     
-    \item Since we are doing summation, what we are going to do in the inner loop is just to keep adding computed results during iterations of $j$, i.e.  \texttt{bi += A[i][j] * x[j]} in each iteration of $j$.
+    \item Since we are doing summation, what we are going to do in the inner loop is just to keep adding \(a_{ij}x_j\) to \(b_i\)  during iterations of $j$. Think about how you could use code to achieve that.
     \item The function requires an n-dimensional \texttt{ndarray}, so we need to wrap the list \texttt{b} with \texttt{np.array()} when function returns the result.
     \item \textbf{(Important!)} To test your code, do not forget to activate your virtual environment first, and then using \texttt{pytest} to test your code.
     \item \textbf{Check your implementation pass the provided test cases.}
@@ -193,7 +244,7 @@ In this section we are not asked to implement anything, but we could use the def
 
 > column_matvec(A0, x0) # single loop implementation
 
-> A0.dot(x0) # numpy implementation
+> A0 @ x0 # using @ ("at" sign) as matmul operator in numpy
 \end{lstlisting}
 \subsubsection*{Efficiency Measuring}
 Here we compare three implementations mentioned above, and the timing function gives us the following results:
@@ -269,12 +320,7 @@ Then we would talk about the rank of a matrix. Actually we have two definitions,
   \begin{figure}[H]
     \centering
     \captionsetup[subfigure]{justification=centering}
-      \begin{tikzpicture}
-        \filldraw[fill=blue!30!white] (0, 0) rectangle (4, 4) node[pos=.5] {$I_{k}$};
-        \filldraw[fill=yellow!30!white] (0, 0) rectangle (4, -2) node[pos=.5] {$0_{(m - k)\times k}$};
-        \filldraw[fill=yellow!30!white]  (4, 0) rectangle (6.5, 4) node[pos=.5] {$0_{k\times (n - k)}$};
-        \draw (4, 0) rectangle (6.5, -2) node[pos=.5] {\small $0_{(m - k)\times (n - k)}$};
-      \end{tikzpicture}
+      \includegraphics[width=0.5\textwidth]{imgs/rank.png}
       \caption{Structure of \(A\) after elementary row and column operations}
       \label{fig:structure}
   \end{figure}
@@ -289,22 +335,16 @@ And I would say the definition of \textbf{full rank} is still straightforward th
 \begin{figure}[H]
   \centering
   \captionsetup[subfigure]{justification=centering}
-  \begin{subfigure}[b]{0.5\textwidth}
+  \begin{subfigure}[b]{0.4\textwidth}
     \centering
-    \begin{tikzpicture}
-      \filldraw[fill=blue!30!white] (0, 0) rectangle (3, 3) node[pos=.5] {$I_{n}$};
-      \draw (0, 0) rectangle (3, -2) node[pos=.5] {$0_{(m - n)\times n}$};
-    \end{tikzpicture}
+    \includegraphics[width=0.6\textwidth]{imgs/rowrank.png}
     \caption{$m \ge n$}
     \label{fig:case1}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.4\textwidth}
       \centering
-      \begin{tikzpicture}
-        \filldraw[fill=blue!30!white] (0, 0) rectangle (3, 3) node[pos=.5] {$I_{m}$};
-        \draw (3, 0) rectangle (5, 3) node[pos=.5] {$0_{m\times (m - n)}$};
-      \end{tikzpicture}
+      \includegraphics[width=\textwidth]{imgs/colrank.png}
       \caption{$m < n$}
       \label{fig:case2}
     \end{subfigure}
@@ -716,34 +756,16 @@ The concept of projector is self-intuitive, but the relations between projector 
   \begin{figure}[H]
     \centering
   \captionsetup[subfigure]{justification=centering}
-  \begin{subfigure}[b]{0.5\textwidth}
+  \begin{subfigure}[b]{0.45\textwidth}
     \centering
-    \begin{tikzpicture}[scale=0.8,transform shape]
-      \draw[->] (-3, 0) -- (3, 0) ;
-      \draw[->] (0, -3) -- (0, 3) ;
-      \draw (-3, 1.5) -- (3, -1.5) node[above] at (3, -1.25) {$\text{range}(P)$};
-      \draw[->, red](0, 0.05) -- (-2, 1.05) node[above] {$v$};   
-      \draw[->, cyan](0, -0.05) -- (-2, 0.95) node[below] {$Pv$};
-    \end{tikzpicture}
+    \includegraphics[width=\textwidth]{imgs/inline.png}
     \caption{$v \in \text{range}(P)$}%
     \label{inrange}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.4\textwidth}
+    \begin{subfigure}[b]{0.5\textwidth}
       \centering
-      \begin{tikzpicture}[scale=0.8,transform shape]
-        \draw[->] (-3, 0) -- (3, 0) ;
-        \draw[->] (0, -3) -- (0, 3) ;
-        \draw (-3, 1.5) -- (3, -1.5) node[above] at (3, -1.25) {$\text{range}(P)$};
-        \coordinate (A) at (-1.5, 2) {};
-        \coordinate (B) at (-1.8, 0.9) {};
-        \coordinate (0) at (0, 0) {};
-        \draw[->, red](0) -- (A) node[above] at (-0.75, 1.5) {$v$};   
-        \draw[->, cyan](0) -- (B) node[below] at (-1.5, 0.75) {$Pv$};
-        \draw[->](A) -- (B) node[left] at (-1.75, 1.75) {$Pv - v$};
-        \draw[dotted](A) -- (-1.2, 3.1);
-        \draw[dotted](A) -- (-2.4, -1.3) node[left] at (-2.5, -0.5) {$\text{null}(P)$};
-      \end{tikzpicture}
+      \includegraphics[width=\textwidth]{imgs/outrange.png}
       \caption{$v \notin \text{range}(P)$}
       \label{outrange}
     \end{subfigure}
@@ -850,20 +872,7 @@ We have known the definition of projectors, but how about the orthogonal project
 This definition might still be too abstract, so we put the definition into the following \autoref{orthogproj}:
   \begin{figure}[H]
     \centering
-    \begin{tikzpicture}[scale=0.78,transform shape]
-    \draw[->] (-3, 0) -- (3, 0) ;
-    \draw[->] (0, -3) -- (0, 3) ;
-    \draw (-3, 1.5) -- (3, -1.5) node[above] at (3, -1.25) {$\text{range}(P)$};
-    \coordinate (A) at (-0.9, 2.7) {};
-    \coordinate (B) at (-1.8, 0.9) {};
-    \coordinate (0) at (0, 0) {};
-    \draw[->, red](0) -- (A) node[above] at (-0.25, 1.75) {$v$};   
-    \draw[->, cyan](0) -- (B) node[below] at (-1.5, 0.75) {$Pv$};
-    \draw[->](A) -- (B) node[left] at (-1.5, 1.75) {$Pv - v$};
-    \draw[dotted](A) -- (-0.6, 3.3);
-    \draw[dotted](A) -- (-2.7, -0.9) node[left] at (-2.7, -0.5) {$\text{null}(P)$};
-    \draw [right angle quadrant=2, right angle symbol={A}{B}{0}];
-      \end{tikzpicture}
+    \includegraphics[width=0.6\textwidth]{imgs/orthogonal_proj.png}
     \caption{Projecting $v$ with Orthogonal Projector $P$}
     \label{orthogproj}
   \end{figure}

@@ -28,7 +28,7 @@ And the output would be:
 \end{lstlisting}
 \subsection{Implementation of \texttt{rank2()}}
 \lstinputlisting[language=Python, firstline=43, lastline=50]{./python/exercise1.py}
-Don't panic if you see the "@" operator and have no idea about it. This is the matrix multiplication operator introduced since Python 3.5 (I hope you are all able to use this). It is definitely a cool and concise operator and I really recommend you to use this rather than methods like \texttt{matmul()} or \texttt{dot()}.
+Here I used an "@" sign between two matrices \(B\) and \(C\). Don't panic if you have no idea about it - This is the matrix multiplication operator introduced since Python 3.5 (I hope you are all using Python 3.5+). It is definitely a cool and concise operator and I really recommend you to use this rather than methods like \href{https://numpy.org/doc/stable/reference/generated/numpy.matmul.html}{\texttt{numpy.matmul()}} or \href{https://numpy.org/doc/stable/reference/generated/numpy.dot.html}{\texttt{numpy.dot()}} (And personally speaking, I only use \texttt{numpy.dot()} for inner products).
 \newpage
 \subsection{Implementation of \texttt{rank1pert\_inv()}}
 \lstinputlisting[language=Python, firstline=53, lastline=56]{./python/exercise1.py}
@@ -56,6 +56,23 @@ You might be confused with \texttt{m, \_ = Ahat.shape}, and there is nothing to 
 
 \section{Exercises 2}
 \subsection{Implementation of \texttt{orthog\_cpts()}}
+You might have implementation(s) like this:
+\begin{lstlisting}[language=Python]
+def orthog_cpts(v, Q):
+    u, r = [], v.copy()
+    _, n = Q.shape
+    for i in range(n):
+        # Find the scale factor of q_i, u_i
+        # when v projected on the direction of it.
+        u_i = np.conj(Q[:, i]).dot(v)
+        u.append(u_i)
+        # Remove the component of q_i from r repeatedly
+        # to get residual term.
+        r -= u_i * Q[:, i]
+    return r, np.array(u)
+\end{lstlisting}
+However the exercise markers would \textbf{mark you down} since you used loops and didn't consider using \textbf{vectorised} operations.
+Think about why my implementation is equivalent to the implementation above.
 \lstinputlisting[language=Python, firstline=6, lastline=9]{./python/exercise2.py}
 
 \subsection{Implementation of \texttt{solveQ()}}

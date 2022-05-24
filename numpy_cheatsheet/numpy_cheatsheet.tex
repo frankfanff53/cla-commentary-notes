@@ -12,14 +12,15 @@
 \renewcommand{\arraystretch}{1.2}
 \begin{document}
 \title{Numpy Cheat Sheet}
-\author{}
-\date{}
+\author{Feifan Fan}
+\date{Summer 2022}
 \maketitle
-\subsection*{Matrix Initialisation \& Construction}
+\subsection*{Matrix Basics}
 \begin{tabular}{p{9cm} |p{5cm}}
 Task & Code Snippet \\
 \hline \\
 Convert a list $a$ to a \texttt{numpy} array & \texttt{np.array(a)} \\
+Get the dimensions \(m, n\) from matrix \(A \in \mathbb{C}^{m\times n}\) & \texttt{m, n = A.shape} \\
 Create an identity matrix \(I_m\) & \texttt{np.eye(m)}  \\
 Create an empty array with length $m$ & \texttt{np.empty(m)}  \\
 Create an empty matrix with dimension $m \times  n$ & \texttt{np.empty((m, n))}\\
