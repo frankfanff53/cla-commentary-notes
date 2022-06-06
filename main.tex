@@ -1,101 +1,6 @@
 \documentclass[a4paper,11pt,twoside]{report}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{textcomp}
-\usepackage{amsmath, amssymb}
-\usepackage{hyperref}
-\usepackage{listings}
-\usepackage{xcolor}
-\usepackage{bookmark}
-\usepackage{authblk}
-\usepackage{fancyhdr, blindtext}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage{mathpazo}
-\usepackage{soul}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[le]{\nouppercase{\rightmark}}
-\fancyhead[re]{\thepage}
-\fancyhead[RO]{\nouppercase{\leftmark}} % chapter
-\fancyhead[LO]{\thepage}
-\setlength{\headheight}{15pt}
-
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.98,0.98,0.92}
-
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=blue,
-    % pdftitle={CLA Commentary},
-    pdfpagemode=FullScreen,
-    }
-
-\urlstyle{same}
-
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,
-    breaklines=true,
-    captionpos=b,
-    keepspaces=true,
-    numbersep=5pt,
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    tabsize=2
-}
-
-\lstset{style=mystyle}
-
-
-\newenvironment{spmatrix}[1]
- {\def\mysubscript{#1}\mathop\bgroup\begin{pmatrix}}
- {\end{pmatrix}\egroup_{\textstyle\mathstrut\mysubscript}}
- 
-% figure support
-\usepackage{import}
-\usepackage{xifthen}
-\usepackage{pdfpages}
-\usepackage{transparent}
-\usepackage{tikz}
-\usetikzlibrary{calc}
-\usepackage{float}
-\usepackage{subcaption}
-\usepackage[export]{adjustbox}
-\newcommand{\incfig}[1]{%
-  \def\svgwidth{\columnwidth}
-  \import{./figures/}{#1.pdf_tex}
-}
-\newcommand{\checked}{\makebox[0pt][l]{$\square$}\raisebox{.15ex}{\hspace{0.1em}$\checkmark$}}
-
-\tikzset{
-    right angle quadrant/.code={
-        \pgfmathsetmacro\quadranta{{1,1,-1,-1}[#1-1]}     % Arrays for selecting quadrant
-        \pgfmathsetmacro\quadrantb{{1,-1,-1,1}[#1-1]}},
-    right angle quadrant=1, % Make sure it is set, even if not called explicitly
-    right angle length/.code={\def\rightanglelength{#1}},   % Length of symbol
-    right angle length=2ex, % Make sure it is set...
-    right angle symbol/.style n args={3}{
-        insert path={
-            let \p0 = ($(#1)!(#3)!(#2)$) in     % Intersection
-                let \p1 = ($(\p0)!\quadranta*\rightanglelength!(#3)$), % Point on base line
-                \p2 = ($(\p0)!\quadrantb*\rightanglelength!(#2)$) in % Point on perpendicular line
-                let \p3 = ($(\p1)+(\p2)-(\p0)$) in  % Corner point of symbol
-            (\p1) -- (\p3) -- (\p2)
-        }
-    }
-}
+\input{preamble.tex}
+\setcounter{chapter}{-1}
 
 
 
@@ -103,7 +8,7 @@
 \title{MATH60024 \\ Computational Linear Algebra \\
 Commentary Notes}
 \date{Autumn 2021-2022}
-\author{Feifan Fan}
+
 \affil{\textit{based on lecture contents} 
 \\ \textit{by Professor Colin Cotter}}
 
@@ -111,24 +16,25 @@ Commentary Notes}
 
 
 \maketitle
-\chapter*{Declaration}
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
 This so-called "commentary notes" is based on lecture notes of MATH60024, Computational Linear Algebra, which is led and lectured by Professor Colin Cotter. 
-The original notes could be found \href{https://comp-lin-alg.github.io}{here}. I would refer it as "master notes" most of the time in the following commentary.
+The original notes could be found \href{https://comp-lin-alg.github.io}{here}.
 
-I wrote this set of notes to explain the important points in the master notes, making extra examples and detailed proofs about concepts and theorems which is not somehow vague, and give step-by-step instructions and hints for doing the \textbf{assessed} coding exercise.
+I wrote this set of notes to emphasize some important points in the original notes, skipping some less-correlated material and explaining hardcore materials in a more direct way. I would also give constructive instructions and hints for the \textbf{assessed} coding exercise.
 
-Obviously I would not show you my code directly, since it is not good for you to practice and improve the coding skills, and not fair to my dedicated 30hr+ code implementation work last year.
-
-However, my hints would be aimed at helping you have a deeper understanding of the problem description and knowledge itself, and also let you to understand the implementations from scratch (I hope so :-D).
+Obviously I would not show you my code directly, however, my hints would be aimed at helping you have a deeper understanding of the problem description and knowledge itself, and also let you to understand the implementations from scratch (I hope so :-D).
 
 There is no need to worry if you think you didn't do the \href{https://object-oriented-python.github.io}{Priciples of Programming} module in year 2. The module is beneficial but not necessary. What you need to do is just giving yourself enough coding practice via attempting the exercises in this module (and read my hints carefully if you get stuck!). Programming is the art of craftsmanship, and dedicated practice would lead you to perfection.
 
+This project-based module might be hard, intensive with workload and deadlines, and annoying if you cannot figure about either mathematics or programming part. However, I hope this supplementary material (and/or myself) could be the place that the readers always rely on, no matter how complex or annoying the problem they encountered is.\smallskip
 
-You might find that I would spend time in proving theorems, although this module is totally "computational". The reason I did this is just to make sure everything could be demonstrated clearly. If you are not happy with reading proofs, feel free to skip them!
+With my work, I hope students not only remember this module because of the multiple intensive 3-day-limited courseworks and 1-less exam in the summer term, but also the fun of understanding the maths, using maths to implement functions, and utilising functions to solve mathematical/real-word problems.
 
 This module would be a great adventure, hope you enjoy and have lots of fun in this journey!
 
 \chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
 Firstly I want to thank Professor Colin Cotter for providing such a brilliant set of open-sourced master notes first.
 Without his extraordinary work, I cannot digest the knowledge in such a quick and enjoyable way, and come up with the idea of writing these "commentary notes". 
 I hope my work would help him and students studying this module in the following years.\smallskip
@@ -137,19 +43,16 @@ My parents are also in my first place to say thanks. They are always the people 
 
 Thanks a lot to my friends Tiansheng, Kexin and Di (pronounced as \textbf{Dee}) being the first group of readers of the notes. Their participation of reading notes and using this as additional studying material in Autumn 2021 gives me extra motivation in studying ahead of the course schedule and finding a more clear way to deliver the contents in-person.\smallskip
 
-I would also like to thank my two friends who motivated me to make more progress in completing the notes (and they might not realise that). They were struggling with notes with vague explanations and lack of mentioning programming skills in their year 2, and I would like to give them as the very first gift of their year 3 pathway at Imperial. Their enthusiasm for mathematics also gave me the opportunity to rethink about the module, and what would I expect in the material if I started this module again.\smallskip
-
-This project-based module might be hard, intensive with workload and deadlines, and annoying if you cannot figure about either mathematics or programming part. However, I hope this supplementary material (and/or myself) could be the place that the readers always rely on, no matter how complex or annoying the problem they encountered is.\smallskip
-
-With my work, I hope students not only remember this module because of the multiple intensive 3-day-limited courseworks and 1-less exam in the summer term, but also the fun of understanding the maths, using maths to implement functions, and utilising functions to solve mathematical/real-word problems.
+I would also like to thank my two friends who motivated me to make more progress in completing the notes (and they might not realise that). They were struggling with notes with vague explanations and lack of mentioning programming skills in their year 2, and I would like to give them as the very first gift of their year 3 pathway at Imperial. Their enthusiasm for mathematics also gave me the opportunity to rethink about the module, and what would I expect in the material if I started this module again. I hope they would listen to my advice and choose this course, and I hope this set of notes would indeed make their life easier.
 \tableofcontents
-\listoffigures
 
-\chapter{Preliminaries}
+\chapter{Programming Preliminaries}
+
+\chapter{Mathematical Preliminaries}
 \input{chapters/preliminaries}
 
-\chapter{QR Factorisation}
-\input{chapters/qrfact}
+% \chapter{QR Factorisation}
+% \input{chapters/qrfact}
 
 % \chapter{Analysing Algorithms}
 % \input{chapters/algoana}
