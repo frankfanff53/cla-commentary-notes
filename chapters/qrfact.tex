@@ -91,7 +91,7 @@ If you have the answer to the questions above, you have already got the key to s
     \right.
   .\] 
   \item We need to find the vectors that are orthogonal to the first \(n\)  column vectors in $Q$, i.e. columns of \(\hat{Q}\). And we could see the remaining $m - n$ columns in  $Q$ are indeed orthogonal to any vector in the first n columns, by the mutual orthogonality mentioned above. 
-  \item Therefore, what we need to do is just to find the \textbf{last} $m - n$ \textbf{columns} from $Q$, which should should be the basis of the orthogonal complementary $U^{\bot}$.
+  \item Therefore, what we need to do is just to find the \textbf{last} $m - n$ \textbf{columns} from $Q$, which should should be the basis of the orthogonal complementary $U^{\bot}$. \checked
 \end{itemize}
 
 \newpage
@@ -196,7 +196,7 @@ Then we should have an orthonormal set $ \{q_1, q_2\} $, and we could compute co
       \end{array}
       \right.
       \]
-      Now the algorithm above should be easy for you to understand.
+      Now the algorithm above should be easy for you to understand. \checked
 
 \noindent \textbf{Important! Please make sure you understand the gist behind the contents below.}  The expressions of \(r_{ij}\) and \(v_j\) look messy and complex to implement in python. Here we have a concise and elegant way to find the values of \(r_{ij}\) and \(v_j\) via matrix products.
 \[
@@ -209,16 +209,16 @@ Then we should have an orthonormal set $ \{q_1, q_2\} $, and we could compute co
 \end{pmatrix} \), with   
 \[
   v_j = a_j - Q_{j - 1}r_j^{(j - 1)} = a_j - Q_{j - 1}(Q_{j - 1}^{*}a_j) = (I - Q_{j - 1}Q_{j - 1}^{*})a_j
-.\]
+\]
 Note that the \(^{*}\) here \textbf{refers to the adjoint of a matrix}, not the scalar multiplication!
 \textbf{Do pause here for a while to make sure you could show the expressions above by yourself.} \medskip
 
 \noindent 
-You can see we are now eliminating the index \(i\) in every expression by replacing the summation with matrix products. This is essential since you can get rid of one for-loop with variable \(i\)  in the algorithm above, and use NumPy-based matrix multiplication. \medskip
+You can see we are now eliminating the index \(i\) in every expression by replacing the summation with matrix products. This is essential since you can get rid of one for-loop with variable \(i\)  in the algorithm above, and use NumPy-based matrix multiplication. \smallskip
 
-\noindent Since we've seen the fact that using matmul in NumPy is more efficient than using for loops, you should pay more attention to using more "vectorized operations" like matmul, and reduce for loops as much as possible. \medskip
+\noindent Since we've seen the fact that using matmul in NumPy is more efficient than using for loops, you should pay more attention to using more "vectorized operations" like matmul, and \textbf{reduce for loops as much as possible. }
 
-\noindent Here is the optimised version of the classical Gram-Schmidt algorithm, \textbf{which is not mentioned in the master notes}.
+\noindent Here is the optimised version of the classical Gram-Schmidt algorithm, \textbf{which is not mentioned by lecturer} but you would \textbf{lose marks if not optimised.}
 \begin{algorithm}
   \caption{Classical Gram-Schmidt Algorithm, optimised}
   \begin{algorithmic}[1]

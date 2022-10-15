@@ -681,7 +681,7 @@ Important things for projector $P$:
   \[
   \text{range}(P) \cap \text{null}(P) = \{\textbf{0}\}
   .\] 
-  The reason of why the intersection contains $\textbf{0}$ only is that, considering the two sets $\text{null}(P)$ and $\text{null}(I - P)$, the only common element is $\textbf{0}$. That is because any vector $v$ in both sets satisfies $v = v - Pv = (I - P)v = 0$. And since we know $\text{null}(I - P) = \text{range}(P)$, the results could be shown as stated above. 
+  The reason of why the intersection contains $\textbf{0}$ only is that, considering the two sets $\text{null}(P)$ and $\text{null}(I - P)$, the only common element is $\textbf{0}$. That is because any vector $v$ in both sets satisfies $v = v - Pv = (I - P)v = 0$. And since we know $\text{null}(I - P) = \text{range}(P)$, the results could be shown as stated above. \checked
 
 \item Conversely, if there exists two subspaces $S_1$ and $S_2$ of $\mathbb{C}^{m}$, where $S_1 \cap S_2 = \{\textbf{0}\}$, there exists a projector $P$ whose range is $S_1$ and nullspace is $S_2$. The proof is not examinable, but it would be better to have a try.
 \end{itemize}
@@ -770,7 +770,7 @@ This definition might still be too abstract, so we put the definition into the f
     v = r + Pv
     .\] 
     and in this case, each \(P\) could split any \(v \in \mathbb{C}^{m}\) as two components \(Pv\) and \(r = v - Pv = (I - P)v\), and the two components are orthogonal to each other as stated above. 
-  \item Then from the definition of orthogonal projectors, we should be confident to say \(P = \sum_{i=1}^{n} (q_iq_i^{*})\) is indeed an orthogonal projector.  
+  \item Then from the definition of orthogonal projectors, we should be confident to say \(P = \sum_{i=1}^{n} (q_iq_i^{*})\) is indeed an orthogonal projector.  \checked
 \end{itemize}
 The construction looks good, but we have a more concise and elegant way to construct an orthogonal projector.
 \newpage
@@ -787,7 +787,7 @@ The construction looks good, but we have a more concise and elegant way to const
     \hat{Q}\hat{Q}^* = \begin{pmatrix} q_1 & q_2 & \ldots & q_n \end{pmatrix} \begin{pmatrix} q_1^{*}\\ q_2^{*} \\\vdots\\ q_n^{*} \end{pmatrix} = q_1q_1^* + q_2q_2^* + \ldots + q_nq_n^{*} =  \sum_{i=1}^{n} (q_iq_i^{*})
   .\]
   which is exactly what an orthogonal projector \(P\) should be.
-  \item So here we conclude that an orthogonal project could be constructed by \textbf{the multiplication of a unitary matrix \(\hat{Q}\) and its adjoint.}
+  \item So here we conclude that an orthogonal project could be constructed by \textbf{the multiplication of a unitary matrix \(\hat{Q}\) and its adjoint.}\checked
 %   see in the construction of the orthogonal projector $P$. \textbf{Personally I think all of you should understand the proof at this level.}
 
 % \item Also, in the light of the change of basis, the product $\hat{Q}^*v$ gives the coefficients of $v$ after projecting along the columns of  $\hat{Q}$, and the multiplication of $\hat{Q}$ on $\hat{Q}^*v$ gives the projections of $v$ expanded in the canonical basis. 
@@ -809,7 +809,7 @@ Since any orthogonal projector has the form $P = \hat{Q}\hat{Q}^*$, we could see
   \[
   = v^*(P^2 - P)v = v^*(P - P)v = 0 
   .\] 
-  Therefore $P$ is orthogonal.
+  Therefore $P$ is orthogonal. \checked
 \end{itemize}
 
 \subsection*{Exercise 1.30 Constructing Orthogonal Projectors}
