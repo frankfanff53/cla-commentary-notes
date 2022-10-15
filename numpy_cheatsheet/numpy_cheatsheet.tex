@@ -62,7 +62,7 @@ Set the $i$ th column of matrix $A$ to $u$ & \texttt{A[:, i] = u} \\
   Compute product of Matrix-Matrix multiplication, $AB$ & \texttt{A} @ \texttt{B}  \\
   Compute dot (inner) product for real vectors $u$ and $v$, $u^{\top}v$ &  \texttt{u.dot(v)}\\
   Compute outer product for real vectors $u$ and  $v$,  $uv^{\top}$ & \texttt{np.outer(u, v)}\\
-  Compute inner product for complex vectors $u$ and  $v$, $u^{*}v$ & \texttt{u.dot(np.conj(v))} \\
+  Compute inner product for complex vectors $u$ and  $v$, $u^{*}v$ & \texttt{np.conj(u).dot(v))} \\
   Compute outer product for complex vectors $u$ and  $v$,  $uv^{*}$ & \texttt{np.outer(u, np.conj(v))}\\
   Compute the sum of elements in vector \(a\) & \texttt{np.sum(a)} \\
   Compute the product of elements in vector \(a\) & \texttt{np.prod(a)} \\
