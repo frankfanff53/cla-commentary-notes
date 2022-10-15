@@ -4,7 +4,7 @@ In computational linear algebra, we would spend a lot of time in matrix equation
 \noindent The transformations, should preserve the correctness in matrix calculations (be sufficiently free from truncation errors, as said in the \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#what-is-the-qr-factorisation}{\textbf{Introduction}} of Chapter 2), and be efficient enough to perform. Here, let us talk about the very first transformation, the \textbf{QR Factorisation}. 
 \medskip
 
-\noindent You might have seen this in your year 2 \href{https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis}{Numerical Analysis} Course, and make some progress in implementation using Julia or Python. We would do some recap and dig further in algorithm stability, and/or time complexities with different ways of implementations.
+\noindent You might have seen this in your year 2 \href{https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis}{Numerical Analysis} Course, and make some progress in implementation using Julia or Python. We would do some recap and dig further into algorithm stability, and/or time complexities with different ways of implementations.
 \newpage
 \section{QR Factorisation Concept}%
 \begin{definition}[Complete QR Factorisation]
@@ -80,7 +80,7 @@ If you have the answer to the questions above, you have already got the key to s
 
 \subsubsection*{Spoil Alert \ldots There is a way you could figure out the problem:}%
 \begin{itemize}
-\item The first thing we need to figure out is, we are actually finding the vectors that are \textbf{orthogonal to the basis} of \(U\). This could be obtained by the first \(n\) columns in matrix \(Q\) from the complete QR of \(U\).
+\item The first thing we need to figure out is, we are finding the vectors that are \textbf{orthogonal to the basis} of \(U\). This could be obtained by the first \(n\) columns in matrix \(Q\) from the complete QR of \(U\).
 \item Then we consider the matrix \(Q\). Given that $Q$ is unitary, we would see all column vectors are orthogonal to each other by expanding
   \[
     [Q^*Q]_{ij} = q_i^*q_j = \delta_{ij} = \left\{
@@ -95,11 +95,32 @@ If you have the answer to the questions above, you have already got the key to s
 \end{itemize}
 
 \newpage
-\section{QR factorisation by classical Gram-Schmidt}%
-We have already seen the concept of QR factorisation, and one of the applications through the previous exercise. Then we are going to explore what exactly happens in this factorisation, via algorithms. The first implementation we would discuss would be the \textbf{classical Gram-Schmidt algorithm}. 
+\section{QR Factorisation by Classical Gram-Schmidt}%
+We have already seen the concept of QR factorisation, and one of the applications through the previous exercise. Then we are going to explore what exactly happens in this factorisation, via algorithms. The first implementation we would discuss would be the \textbf{classical Gram-Schmidt algorithm}. The algorithm itself is straightforward:
+\begin{algorithm}
+  \caption{Classical Gram-Schmidt Algorithm}
+  \begin{algorithmic}[1]
+  \Procedure{GS\_classical}{A}
+    \State initialise \(Q, R\)  as empty matrices
+    \For{ \(j = 1\) to \(n\)}
+      \State \(v_j = a_j\)
+      \For{ \(i = 1\) to \(j - 1\)}
+        \State \(r_{ij} = q_i^{*}a_j\)
+        \State \(v_j = v_j - r_{ij}q_i\)
+        \Comment{Remove components of existing \(q_i\) from \(v_j\)}
+      \EndFor
+      \State \(r_{jj} = \|v_j\|\)  
+      \State \(q_j = \frac{v_j}{\|v_j\|}\)
+      \Comment{Finish constructing a new basis vector \(q_j\)}
+    \EndFor
+    \State \Return \(Q, R\)
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
 
-\medskip
-\noindent But before we just show the explicit implementation, we could look backwards to see how vectors $ \{a_i\} $ factctorised to orthonormal vectors $ \{q_i\} $. Just expand $A = QR$ by arithmetic:
+\noindent However, the algorithm might look no sense at all since we haven't discussed the maths behind it so far. Here we look backwards to see how vectors $ \{a_i\} $ factorised to orthonormal vectors $ \{q_i\} $. \medskip
+
+\noindent Just expand $A = QR$ by arithmetic:
 
  \[
    A = QR \implies \begin{pmatrix} a_1 & a_2 & \ldots & a_n \end{pmatrix} = 
@@ -137,10 +158,10 @@ Then consider $a_2$ from the summation expression above:
  \[
 a_2 = r_{12}q_1 + r_{22}q_2
 .\]
-But we don't know how to get the value of $r_{12}$ yet. Recall the idea we used in the implementation of $\texttt{orthog\_cpts()}$, we have now have a one-element only orthonormal set $ \{q_1\} $, we need to compute $a_2 = r' + u_1q_1 = r_{22}q_2 + r_{12}q_1$. So simply we see
+But we don't know how to get the value of $r_{12}$ yet. Since we know $a_2 = r_{22}q_2 + r_{12}q_1$, and here is the trick to find \(r_{12}\) by using \(q_1\)  :
 \[
-  r_{12} = u_1 = q_1^* a_2
-\]
+  q_1^* a_2 = r_{22}(q_1^{*}q_2) + r_{12}(q_1^{*}q_1) = r_{22} \cdot 0 + r_{12} \cdot 1 = r_{12}
+.\]
 and to get the value of $q_2$ and $r_{22}$, we remove the component of $q_1$ from $a_2$ and we could get:
 \[
     v_2 = a_2 - r_{12}q_1 = r_{22}q_2 \implies 
@@ -151,12 +172,12 @@ and to get the value of $q_2$ and $r_{22}$, we remove the component of $q_1$ fro
       \end{array}
     \right.
 .\]
-Then we could add $q_2$ to the orthonormal set and use $ \{q_1, q_2\} $ to compute corresponding $q_3$ and scale factor $r_{i3}$s. And as we repeat these steps iteratively, we could compute the value of $q_4, q_5, \ldots$ until $q_n$. \medskip
+Then we should have an orthonormal set $ \{q_1, q_2\} $, and we could compute corresponding $q_3$ and scale factor $r_{i3}$s in a similar approach. \medskip
 
-\noindent And more generally, given matrix \(A \in \mathbb{C}^{m \times n}\), we could compute the entries of \(Q \in \mathbb{C}^{m \times  n}, R \in \mathbb{C}^{n \times  n}\) with the following formula:
+\noindent As we repeat these steps iteratively, we could compute the value of $q_4, q_5, \ldots$ until $q_n$, and also the coefficients \(r_{ij}\). And more generally, given matrix \(A \in \mathbb{C}^{m \times n}\), we could compute the entries of \(Q \in \mathbb{C}^{m \times  n}, R \in \mathbb{C}^{n \times  n}\) with the following formula:
 \[
-  q_i = \frac{v_{i}}{\|v_{i}\|}
-.\]
+  q_j = \frac{v_{j}}{\|v_{j}\|}
+\]
 \[
   r_{ij} = \left\{
     \begin{array}{ll}
@@ -165,31 +186,84 @@ Then we could add $q_2$ to the orthonormal set and use $ \{q_1, q_2\} $ to compu
     0 & \text{otherwise}
     \end{array}
   \right.
-.\]
-where
-\[
-  v_{i} = \left\{
+  \]
+  where
+  \[
+    v_{j} = \left\{
       \begin{array}{ll}
-      a_{i} & i = 1\\
-      a_{i} - \sum_{k=1}^{i - 1} r_{ki}q_{k} = a_{i} - \sum_{k=1}^{i - 1} (q_{k}q_{k}^{*})a_{i} & \text{otherwise}
+        a_{j} & i = 1\\
+        a_{j} - \sum_{k=1}^{j - 1} r_{kj}q_{k} = a_{j} - \sum_{k=1}^{j - 1} (q_{k}q_{k}^{*})a_{j} & \text{otherwise}
       \end{array}
-  \right.
-.\]
-And then the explicit algorithm of QR factorisation via classical Gram-Schmidt should be very straightforward. You can find it \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#qr-factorisation-by-classical-gram-schmidt-algorithm}{here} from master notes and step in to the very first implementation exercise of QR.
-\newpage
+      \right.
+      \]
+      Now the algorithm above should be easy for you to understand.
 
-\noindent To be more specific, \autoref{cgs} would demonstrate the flow of the classical Gram-Schmidt Algorithm, if we just focus on turning \(A\) to \(Q\): 
+\noindent \textbf{Important! Please make sure you understand the gist behind the contents below.}  The expressions of \(r_{ij}\) and \(v_j\) look messy and complex to implement in python. Here we have a concise and elegant way to find the values of \(r_{ij}\) and \(v_j\) via matrix products.
+\[
+  r_j = \begin{pmatrix} r_j^{(j - 1)} \\ r_{jj} \\ 0 \\ \vdots \\ 0\end{pmatrix} = \begin{pmatrix} Q_{(j - 1)}^{*}a_j \\ \|v_j\| \\ 0 \\ \vdots \\ 0\end{pmatrix}
+  \]
+  where \(Q_{j - 1} = \begin{pmatrix} 
+  q_1 & \dots & q_{j - 1} 
+\end{pmatrix} \) and \(r_j^{(j - 1)} = \begin{pmatrix} 
+  r_{1j} & \dots & r_{(j-1)j}
+\end{pmatrix} \), with   
+\[
+  v_j = a_j - Q_{j - 1}r_j^{(j - 1)} = a_j - Q_{j - 1}(Q_{j - 1}^{*}a_j) = (I - Q_{j - 1}Q_{j - 1}^{*})a_j
+.\]
+Note that the \(^{*}\) here \textbf{refers to the adjoint of a matrix}, not the scalar multiplication!
+\textbf{Do pause here for a while to make sure you could show the expressions above by yourself.} \medskip
+
+\noindent 
+You can see we are now eliminating the index \(i\) in every expression by replacing the summation with matrix products. This is essential since you can get rid of one for-loop with variable \(i\)  in the algorithm above, and use NumPy-based matrix multiplication. \medskip
+
+\noindent Since we've seen the fact that using matmul in NumPy is more efficient than using for loops, you should pay more attention to using more "vectorized operations" like matmul, and reduce for loops as much as possible. \medskip
+
+\noindent Here is the optimised version of the classical Gram-Schmidt algorithm, \textbf{which is not mentioned in the master notes}.
+\begin{algorithm}
+  \caption{Classical Gram-Schmidt Algorithm, optimised}
+  \begin{algorithmic}[1]
+  \Procedure{GS\_classical\_optimised}{A}
+    \State initialise \(Q, R\)  as empty matrices
+    \For{ \(j = 1\) to \(n\)}
+      \State \(r_j^{(j - 1)} = Q_{(j - 1)}^{*}a_j\)
+      \State \(v_j = a_j - Q_{j - 1}r_j^{(j - 1)}\)
+      \State \(r_{jj} = \|v_j\|\)
+      \State \(q_j = \frac{v_j}{\|r_{jj}\|}\)    
+    \EndFor
+    \State \Return \(Q, R\) 
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+\newpage
+\noindent To let you have a more direct sense of classical Gram-Schmidt, \autoref{cgs} would demonstrate the flow of the classical Gram-Schmidt Algorithm. 
 \begin{figure}[htp]
   \centering
   \includegraphics[width=\textwidth]{imgs/cgs.png}
   \caption{Classical Gram-Schmidt Algorithm Demonstration}
   \label{cgs}
 \end{figure}
+
+\noindent The only difference between the algorithm and \autoref{cgs} is I didn't create another array to store column-vectors of \(Q\) but in the sense of "converting" \(A\)  to \(Q\)  column-wise.
+\newpage
 \subsection*{Exercise 2.4: Implement the Gram-Schmidt Algorithm}
 \addcontentsline{toc}{subsection}{Exercise 2.4: Implement the classical Gram-Schmidt Algorithm}
 \subsubsection*{Problem Description}%
-Here you need to implement the classical Gram-Schmidt algorithm from the derivation above in your function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_classical}{\texttt{exercises2.GS\_classical()}}. Note that instead returning matrices \(Q\) and \(R\) from the function, you need to change original matrix \(A\) to \(Q\) 'in-place', and return \(R\) only.
+Here you need to implement the classical Gram-Schmidt algorithm from the derivation above in your function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_classical}{\texttt{exercises2.GS\_classical()}}. Note that instead returning matrices \(Q\) and \(R\) from the function, you need to change original matrix \(A\) to \(Q\) 'in-place' (which is in the way I demonstrated in \autoref{cgs}) and return \(R\) only.
 \subsubsection*{What to do}
-There is not too much to say about this exercise. Try using 'vectorized' operations in your implementation, e.g. matrix multiplication rather than additional loops. \medskip
+There is not too much to talk about in this exercise. However, two things are still worth mentioning:
+\begin{enumerate}
+  \item You are asked to change \(A\)  to \(Q\)  "in-place", which is not mentioned in the pseudo-code above. A good initiative to achieve this is to initialise \texttt{Q = A} in your function and follow the optimised algorithm to write your code. 
+  \item When creating empty or zero matrices with NumPy, the matrices would not be initialised as complex matrices. You might find specifying \texttt{dtype=np.complex128} or \texttt{dtype=A.dtype} useful in your code implementation.  
+\end{enumerate}
+The main task for you now is to not be confused between indexes in maths formulas and Python (starting from 0). Try using 'vectorized' operations in your implementation, e.g. matrix multiplication rather than additional loops. \medskip
 
-\noindent \textbf{Remember to check your implementation pass the provided test cases.}
+\noindent \textbf{Remember to check your implementation passes the provided test cases.}
+
+\section{QR Factorisation by Modified Gram-Schmidt}
+This part is the modification of classical Gram-Schmidt and contains two coding exercises. The content is not very hard since it's just an extension to the CGS (starting from \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#projector-interpretation-of-gram-schmidt}{master notes 2.3}), but I would suggest you have an in-person session with me if you want to make your life easier (especially with coding exercises) and make sure everything is clear.
+\bigskip
+
+\begin{center}
+  \textit{\large End of Week 2}
+\end{center}
