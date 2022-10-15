@@ -1,18 +1,19 @@
-In computational linear algebra, we would spend a lot of time in matrix equations or expressions like $Ax = b$. However, for large matrices  $A$, it is always difficult and inefficient to find the value of $x$, if we try finding the inverse of $A$ directly. So what we want to do is to "transform" our $A$ into smaller building blocks with specific properties, and use the properties of them to make the equation easier to solve. 
+In computational linear algebra, we would spend a lot of time in matrix equations or expressions like $Ax = b$. However, for large matrices  $A$, it is always difficult and inefficient to find the value of $x$, if we try finding the inverse of $A$ directly. So what we want to do is to "transform" our $A$ into smaller building blocks with specific properties, and use their properties of them to make the equation easier to solve. 
 
 \medskip
 \noindent The transformations, should preserve the correctness in matrix calculations (be sufficiently free from truncation errors, as said in the \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#what-is-the-qr-factorisation}{\textbf{Introduction}} of Chapter 2), and be efficient enough to perform. Here, let us talk about the very first transformation, the \textbf{QR Factorisation}. 
 \medskip
 
 \noindent You might have seen this in your year 2 \href{https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis}{Numerical Analysis} Course, and make some progress in implementation using Julia or Python. We would do some recap and dig further in algorithm stability, and/or time complexities with different ways of implementations.
-
+\newpage
 \section{QR Factorisation Concept}%
-What does \textbf{QR Factorisation} do is to simply decompose an arbitrary matrix $A$, to a unitary matrix $Q$ and an upper triangular matrix $R$. 
-i.e. to  write
-\[
-  A = QR \text{ where } A \in \mathbb{C}^{m\times n}, Q  \text{ unitary } \in \mathbb{C}^{m \times m}, R  \text{ upper triangular } \in \mathbb{C}^{m \times n}
-.\]
-And without loss of generality we consider $m > n$, and have:
+\begin{definition}[Complete QR Factorisation]
+  The \textbf{Complete QR Factorisation} is defined as the processing of decomposing an arbitrary matrix $A \in \mathbb{C}^{m \times  n}$ to the form
+  \[
+    A = QR \text{ where } Q \text{ unitary } \in \mathbb{C}^{m \times m}, R  \text{ upper triangular } \in \mathbb{C}^{m \times n}
+  .\]
+\end{definition}
+Without loss of generality we consider $m > n$, and have:
 \[
 \underset{\begin{array}{c}\\ A \end{array}}%
 {
@@ -27,10 +28,10 @@ And without loss of generality we consider $m > n$, and have:
 \underset{\begin{array}{c}\\ Q \end{array}}%
 {
 \begin{pmatrix}
-  q_{11} & q_{12} & \ldots & q_{1n} & \ldots & q_{1m} \\
-  q_{21} & q_{22} & \ldots & q_{2n} & \ldots & q_{2m}\\
-  \vdots & \vdots & \ddots & \vdots & \ddots & \vdots\\
-  q_{m1} & q_{m2} & \ldots & q_{mn} & \ldots & q_{mm}
+  q_{11} & \ldots & q_{1n} & \ldots & q_{1m} \\
+  q_{21} & \ldots & q_{2n} & \ldots & q_{2m}\\
+  \vdots & \ddots & \vdots & \ddots & \vdots\\
+  q_{m1} & \ldots & q_{mn} & \ldots & q_{mm}
 \end{pmatrix}
 }
 \begin{spmatrix}{R}
@@ -42,12 +43,17 @@ And without loss of generality we consider $m > n$, and have:
   \vdots & \vdots & \ddots & \vdots \\
   0 & 0 & \ldots & 0
 \end{spmatrix}
-\] 
-And we called this as the \textbf{complete QR factorisation}. 
+\]
+Note that, the term $q_{ik}r_{kj}$ would always give out 0 when $k > n$ and make no contribution to the value of  $a_{ij}$. Therefore, we could only consider the first $n$ columns of $Q$ and the first $n$ rows of $R$ as the result of factorisation.
 
-\medskip
-
-\noindent Note that, the term $q_{ik}r_{kj}$ would always give out 0 as result when $k > n$ and make no contribution to the value of  $a_{ij}$. Therefore, we could only consider the first $n$ columns of $Q$, $\hat{Q}$ and the first $n$ rows of  $R$,  $\hat{R}$ as result of factorisation instead (i.e. Determine $A = \hat{Q}\hat{R}$ as a reduced alternative).
+\begin{definition}[Reduced QR Factorisation]
+  The \textbf{Reduced QR Factorisation} is defined as the processing of decomposing an arbitrary matrix $A \in \mathbb{C}^{m \times  n}$ to the form
+  \[
+    A = \hat{Q}\hat{R} \text{ where } \hat{Q} \text{ unitary } \in \mathbb{C}^{m \times n}, \hat{R}  \text{ upper triangular } \in \mathbb{C}^{n \times n}
+  .\]
+  where \(\hat{Q}\), \(\hat{R}\) are sub-matrices of the  complete factorisation results \(Q\), \(R\).
+\end{definition}
+We are mainly talking about the \textbf{reduced} case of QR factorisation in this chapter, but do think about the complete case when doing exercises.
 
 \subsection*{Exercise 2.3: Find an orthonormal basis of the orthogonal complement of a subspace}
 \addcontentsline{toc}{subsection}{Exercise 2.3: Find an orthonormal basis of the orthogonal complement of a subspace}
@@ -60,41 +66,37 @@ U^{\bot} = \{x \in \mathbb{C}^{m}: \forall u \in U, x^{*}u = 0\}
 .\] 
 Implement this as a function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.orthog_space}{\texttt{exercises2.orthog\_space()}}. \medskip
 
-\noindent  
-(hint: You should make use of the built in QR factorisation routine
-
-\noindent \texttt{numpy.linalg.qr()}.)
-
-\subsubsection*{What to do}%
-\label{ssub:what_to_do}
-
+\subsubsection*{Hints}
 \begin{enumerate}
-  \item Think about what does QR factorisation actually do: what are the properties of $Q$ and $R$  (and similarly $\hat{Q}$ and $\hat{R}$ in the reduced version)?
-  \item You might notice $Q$ (and $\hat{Q}$) is unitary, so try to think about the relationship between column vectors in matrix by expanding $Q^*Q = I$.
-  \item And the basis of $U$ could be easily seen by the columns of $\hat{Q}$. So if we find the vectors orthogonal to all column vectors in $\hat{Q}$, we should find the basis of the orthogonal complement of $U$.
-  \item Go back to step 2 and see if you can find vectors orthogonal to columns of \(\hat{Q}\) from some certain matrices. Make the implementation in Python.
+  \item Consider the condition \(\forall u \in U, x^{*}u = 0\), can we consider the elements in a smaller \textbf{subset of \(U\)} rather than all elements in \(U\) to simplify the satisfying criteria? If so, what is the subset?
+  \item You might find the matrix \(Q\), \(R\) from complete factorisation useful for answering the question above.    
+  \item Consider the matrix \(Q\) obtained from the \textbf{complete QR factorisation}, what is the relationship between any two columns of \(Q\)?  
+  \item You might want to use the numpy-based QR factorisation routine \texttt{numpy.linalg.qr()}.
 \end{enumerate}
-\noindent \textbf{Remember to check your implementation pass the provided test cases.}
-\subsubsection*{Spoil Alert\ldots There is a way you could figure out the problem}%
-\label{ssub:analysis}
-Here we have some explanation to this implementation:
+If you have the answer to the questions above, you have already got the key to solving this problem. Pause here for a moment to think about how to obtain the orthonormal basis of \(U^{\bot}\). Feel free to read my explanation on the next page if you get confused. \medskip
+
+\noindent \textbf{Remember to check your implementation passes the provided test cases.}
+\newpage
+
+\subsubsection*{Spoil Alert \ldots There is a way you could figure out the problem:}%
 \begin{itemize}
-\item Given that we know $Q$ is unitary, we would see all column vectors are orthogonal to each other by expanding
+\item The first thing we need to figure out is, we are actually finding the vectors that are \textbf{orthogonal to the basis} of \(U\). This could be obtained by the first \(n\) columns in matrix \(Q\) from the complete QR of \(U\).
+\item Then we consider the matrix \(Q\). Given that $Q$ is unitary, we would see all column vectors are orthogonal to each other by expanding
   \[
-    [Q^*Q]_{ij} = q_i^*q_j = I_{ij} = \left\{
+    [Q^*Q]_{ij} = q_i^*q_j = \delta_{ij} = \left\{
       \begin{array}{l}
       0 \text{ when $i \neq j$} \\
       1 \text{ when $i = j$}
       \end{array}
     \right.
   .\] 
-  \item And since we need to find the vectors that orthogonal to all column vectors in $\hat{Q}$, which is the first $n$ columns of $Q$. We could actually see the remaining $m - n$ columns in  $Q$ are actually orthogonal to all column vectors in $\hat{Q}$, by the mutual orthogonality we observed in column space of $Q$. 
-  \item Therefore, what we need to do is just to find the value of Q. And we need to get the \textbf{last} $m - n$ \textbf{columns} from $Q$, which should should be the basis of the orthogonal complementary $U^{\bot}$.
+  \item We need to find the vectors that are orthogonal to the first \(n\)  column vectors in $Q$, i.e. columns of \(\hat{Q}\). And we could see the remaining $m - n$ columns in  $Q$ are indeed orthogonal to any vector in the first n columns, by the mutual orthogonality mentioned above. 
+  \item Therefore, what we need to do is just to find the \textbf{last} $m - n$ \textbf{columns} from $Q$, which should should be the basis of the orthogonal complementary $U^{\bot}$.
 \end{itemize}
 
 \newpage
 \section{QR factorisation by classical Gram-Schmidt}%
-We have already seen the concept of QR factorisation, and one of the application through the previous exercise. Then we are going to explore what exactly happens in this factorisation, via algorithms. The first implementation we would discuss would be the \textbf{classical Gram-Schmidt algorithm}. 
+We have already seen the concept of QR factorisation, and one of the applications through the previous exercise. Then we are going to explore what exactly happens in this factorisation, via algorithms. The first implementation we would discuss would be the \textbf{classical Gram-Schmidt algorithm}. 
 
 \medskip
 \noindent But before we just show the explicit implementation, we could look backwards to see how vectors $ \{a_i\} $ factctorised to orthonormal vectors $ \{q_i\} $. Just expand $A = QR$ by arithmetic:
