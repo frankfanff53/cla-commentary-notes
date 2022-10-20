@@ -218,7 +218,7 @@ You can see we are now eliminating the index \(i\) in every expression by replac
 
 \noindent Since we've seen the fact that using matmul in NumPy is more efficient than using for loops, you should pay more attention to using more "vectorized operations" like matmul, and \textbf{reduce for loops as much as possible. }
 
-\noindent Here is the optimised version of the classical Gram-Schmidt algorithm, \textbf{which is not mentioned by lecturer} but you would \textbf{lose marks if not optimised.}
+\noindent Here is the optimised version of the classical Gram-Schmidt algorithm, \textbf{which is not mentioned by the lecturer} but you would \textbf{lose marks if not optimised.}
 \begin{algorithm}
   \caption{Classical Gram-Schmidt Algorithm, optimised}
   \begin{algorithmic}[1]
@@ -246,8 +246,8 @@ You can see we are now eliminating the index \(i\) in every expression by replac
 
 \noindent The only difference between the algorithm and \autoref{cgs} is I didn't create another array to store column-vectors of \(Q\) but in the sense of "converting" \(A\)  to \(Q\)  column-wise.
 \newpage
-\subsection*{Exercise 2.4: Implement the Gram-Schmidt Algorithm}
-\addcontentsline{toc}{subsection}{Exercise 2.4: Implement the classical Gram-Schmidt Algorithm}
+\subsection*{Exercise 2.4: Implement the Classical Gram-Schmidt Algorithm}
+\addcontentsline{toc}{subsection}{Exercise 2.4: Implement the Classical Gram-Schmidt Algorithm}
 \subsubsection*{Problem Description}%
 Here you need to implement the classical Gram-Schmidt algorithm from the derivation above in your function \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_classical}{\texttt{exercises2.GS\_classical()}}. Note that instead returning matrices \(Q\) and \(R\) from the function, you need to change original matrix \(A\) to \(Q\) 'in-place' (which is in the way I demonstrated in \autoref{cgs}) and return \(R\) only.
 \subsubsection*{What to do}
@@ -261,9 +261,132 @@ The main task for you now is to not be confused between indexes in maths formula
 \noindent \textbf{Remember to check your implementation passes the provided test cases.}
 
 \section{QR Factorisation by Modified Gram-Schmidt}
-This part is the modification of classical Gram-Schmidt and contains two coding exercises. The content is not very hard since it's just an extension to the CGS (starting from \href{https://comp-lin-alg.github.io/L2_QR_factorisation.html#projector-interpretation-of-gram-schmidt}{master notes 2.3}), but I would suggest you have an in-person session with me if you want to make your life easier (especially with coding exercises) and make sure everything is clear.
-\bigskip
+This part is the modification of classical Gram-Schmidt and contains two coding exercises. The initiative we want to make a modified version of classical Gram-Schmidt is due to the instability of classical GS. Here is the demonstration:\medskip
 
-\begin{center}
-  \textit{\large End of Week 2}
-\end{center}
+\noindent Let us say we have obtained \(Q, R\) from classical Gram-Schmidt, and mathematically we should have \(QR = A\). But since there are lots of rounding errors from the inexact arithmetic when this algorithm runs on computers, the entries of \(Q, R\)  are "polluted" so it is not necessarily correct for the equation \(QR = A\) when we do factorisation with classical GS. \medskip
+
+\noindent Therefore the mathematicians propose a quick fix to the classical GS algorithm, and we called the modified version as \textbf{modified Gram-Schmidt}. The algorithm goes in this way:
+
+\begin{algorithm}
+\caption{Modified Gram-Schmidt Algorithm}
+\label{mgs-algorithm}
+\begin{algorithmic}[1]
+\Procedure{GS\_modified}{A}
+  \State initialise \(Q, R\)  as empty matrices
+  \For{ \(i = 1\) to \(n\)}
+    \State \(v_i = a_i\)
+    \State \(r_{ii} = \frac{v_i}{\|v_i\|}\)  
+    \For{ \(j = i + 1\) to \(n\)}
+      \State \(r_{ij} = q_i^{*}v_j\)
+      \State \(v_j = v_j - r_{ij}q_i\)
+      \Comment{Remove components of \(q_i\) from all \(v_j\)s}
+    \EndFor
+    \Comment{Finish constructing a new basis vector \(q_j\)}
+  \EndFor
+  \State \Return \(Q, R\)
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\noindent To let you have a more direct sense of modified Gram-Schmidt, \autoref{mgs} would demonstrate the flow of the modified Gram-Schmidt Algorithm. \medskip
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{imgs/mgs.png}
+  \caption{Modified Gram-Schmidt Algorithm Demonstration}
+  \label{mgs}
+\end{figure}
+\noindent You might find it confusing that, there are also superscripts in \(v_k\)  in \autoref{mgs} above, e.g. \(v_3^{(2)}\). The notation \(v_k^{(i)}\)  here is just for demonstrating the updated value of column vector \(v_k\) after iteration \(i\). 
+
+\noindent For simplicity, I will ignore the superscripts \(^{(i)}\) in \(v_k\) in the following explanations, and I hope you could still understand the upcoming contents. \medskip
+
+\noindent Essentially the modified GS and the classical GS have the same effect in factorisation. Recall that in classical GS what we did in each iteration \(k\) is, \textbf{set the vector \(v_k = a_k\), remove the components of found \(\{q_1, q_2, ..., q_{k - 1}\}\) from \(v_k\), set the normalised (and updated) \(v_k\) as \(q_k\), and add the obtained \(q_k\)  to the existing orthonormal set \(\{q_i\}\)} for the next iteration. However, what we did in the modified GS is, for each iteration \(k\), \textbf{I picked up the column vector \(v_k\), normalise it to obtain a basis vector \(q_k\), and remove the components of \(q_k\) from the vectors \(\{v_{k + 1}, ..., v_{n}\}\)} behind. \medskip
+
+\noindent The two algorithms indeed have the same effect on an arbitrary matrix \(A\), and also have the same number of computational operations. However, the main difference is that in modified GS we define \(r_{ij} = q_i^{*}v_j\) rather than \(r_{ij} = q_i^{*}a_j\). In this case, \textbf{the rounding error} in finding \(r_{ij}\) would be \textbf{smaller} and the \textbf{algorithm will be more stable.} Click \href{https://math.stackexchange.com/questions/3913710/intuitive-explanation-of-why-the-modified-gram-schmidt-is-more-stable-than-the-c}{here} to see the explanation.\medskip
+
+\noindent You might think now you should be ready for implementing this algorithm by yourself. However, from one of the gist in this course, \textbf{you should use avoid "additional" for loops as much as possible}. That is to say, you should consider if you could reduce the number of "for loops" in the algorithm shown in the class/on the website. Pause here for a while to think about it, and go to the next page for checking my solution to reduce no. of for-loops by introducing vectorized operations. 
+
+\newpage
+\noindent Consider the inner for-loop starting from \textbf{line 6 to line 9} in \autoref{mgs-algorithm}. Firstly we should see in this loop we computed the values \(\{r_{i(i + 1)}, r_{i(i + 2)}, ..., r_n\}\), by arithmetic we should see
+\[
+  r_i^{(i + 1, n)} = \begin{pmatrix} 
+    r_{i(i + 1)} \\ r_{i(i + 2)} \\ \vdots \\ r_n
+  \end{pmatrix}
+  = 
+  \begin{pmatrix} 
+      q_i^{*}v_{i + 1} \\
+      q_i^{*}v_{i + 2} \\
+      \vdots \\
+      q_i^{*}v_{n}
+  \end{pmatrix}
+  = \begin{pmatrix} 
+     v_{i + 1}^{*}q_i & v_{i + 2}^{*}q_i & ... & v_{n}^{*}q_i
+  \end{pmatrix}^{*}
+\]
+\[
+  =
+  (\begin{pmatrix} 
+    v_{i + 1}^{*}q_i \\
+    v_{i + 2}^{*}q_i \\
+    \vdots \\
+    v_{n}^{*}q_i
+\end{pmatrix}^{T})^{*}
+  = ((V_{i + 1}^{*}q_i)^{T})^{*} = ((V_{i + 1}^{*}q_i)^{*})^{T} 
+\]
+\[
+  = (q_i^{*}V_{i + 1})^{T} = V_{i + 1}^{T}\bar{q_i}
+\]
+where \(V_{i + 1} = \begin{pmatrix} 
+    v_{i + 1} & v_{i + 2} & ... & v_{n}
+\end{pmatrix} \)  and \(\bar{q_i}\) is the complex conjugate of \(q_i\). \medskip
+
+\noindent Also we could see the component of \(q_i\)  is removed from \(\{v_{i + 1}, v_{i + 2}, ..., v_{n}\} \) in iteration \(i\). Recall the definition of outer product \(uv^{T}\) and we should see
+\[
+  V_{i + 1} = V_{i + 1}
+  - \begin{pmatrix} 
+    r_{i(i + 1)}q_i & r_{i(i + 2)}q_i & ... & r_{in}q_i 
+  \end{pmatrix} 
+\]
+\[
+  = V_{i + 1} - q_i \begin{pmatrix} 
+    r_{i(i + 1)} \\
+    r_{i(i + 2)} \\
+    \vdots \\
+    r_{in}
+  \end{pmatrix}^{T}
+  = V_{i + 1} - q_i (r_i^{(i + 1, n)})^{T}
+\]
+Therefore, you now have the optimised version of the modified Gram-Schmidt algorithm, which is not mentioned by the lecturer but you would lose marks if not optimised.
+
+\begin{algorithm}
+  \caption{Modified Gram-Schmidt Algorithm, optimised}
+  \label{mgs-algorithm-optimised}
+  \begin{algorithmic}[1]
+  \Procedure{GS\_modified\_optimised}{A}
+    \State initialise \(Q, R\)  as empty matrices
+    \For{ \(i = 1\) to \(n\)}
+      \State \(v_i = a_i\)
+      \State \(r_{ii} = \frac{v_i}{\|v_i\|}\)
+      \State \(r_i^{(i + 1, n)} = V_{i + 1}^{T}\bar{q_i}\)
+      \State \(V_{i + 1} = V_{i + 1} - q_i (r_i^{(i + 1, n)})^{T}\)    
+    \EndFor
+    \State \Return \(Q, R\)
+  \EndProcedure
+  \end{algorithmic}
+  \end{algorithm}
+
+\subsection*{Exercise 2.5: Implement the Modified Gram-Schmidt Algorithm}
+\addcontentsline{toc}{subsection}{Exercise 2.5: Implement the Modified Gram-Schmidt Algorithm}
+\subsubsection*{Problem Description}%
+You are now asked to implement the modified Gram-Schmidt algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_modified}{\texttt{exercises2.GS\_modified}}. You should be able to implement it with the minimum amount of loops from reading the optimised algorithm above. \medskip
+
+\noindent \textbf{Remember to check your implementation passes the provided test cases.}
+
+\section{Modified Gram-Schmidt Algorithm with Triangular Orthogonalisation}
+From \autoref{mgs} you should see how modified Gram-Schmidt works iteratively. However, from another perspective, we could consider each iteration \(k\) as a transformation represented by matrix \(R_i\). The transformation \(R_i\)  
+
+
+% \bigskip
+
+% \begin{center}
+%   \textit{\large End of Week 2}
+% \end{center}
