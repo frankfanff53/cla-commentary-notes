@@ -329,17 +329,17 @@ This part is the modification of classical Gram-Schmidt and contains two coding 
     v_{i + 2}^{*}q_i \\
     \vdots \\
     v_{n}^{*}q_i
-\end{pmatrix}^{T})^{*}
-  = ((V_{i + 1}^{*}q_i)^{T})^{*} = ((V_{i + 1}^{*}q_i)^{*})^{T} 
+\end{pmatrix}^{\top})^{*}
+  = ((V_{i + 1}^{*}q_i)^{\top})^{*} = ((V_{i + 1}^{*}q_i)^{*})^{\top} 
 \]
 \[
-  = (q_i^{*}V_{i + 1})^{T} = V_{i + 1}^{T}\bar{q_i}
+  = (q_i^{*}V_{i + 1})^{\top} = V_{i + 1}^{\top}\overline{q_i}
 \]
 where \(V_{i + 1} = \begin{pmatrix} 
     v_{i + 1} & v_{i + 2} & ... & v_{n}
-\end{pmatrix} \)  and \(\bar{q_i}\) is the complex conjugate of \(q_i\). \medskip
+\end{pmatrix} \)  and \(\overline{q_i}\) is the complex conjugate of \(q_i\). \medskip
 
-\noindent Also we could see the component of \(q_i\)  is removed from \(\{v_{i + 1}, v_{i + 2}, ..., v_{n}\} \) in iteration \(i\). Recall the definition of outer product \(uv^{T}\) and we should see
+\noindent Also we could see the component of \(q_i\)  is removed from \(\{v_{i + 1}, v_{i + 2}, ..., v_{n}\} \) in iteration \(i\). Recall the definition of outer product \(uv^{\top}\) and we should see
 \[
   V_{i + 1} = V_{i + 1}
   - \begin{pmatrix} 
@@ -352,8 +352,8 @@ where \(V_{i + 1} = \begin{pmatrix}
     r_{i(i + 2)} \\
     \vdots \\
     r_{in}
-  \end{pmatrix}^{T}
-  = V_{i + 1} - q_i (r_i^{(i + 1, n)})^{T}
+  \end{pmatrix}^{\top}
+  = V_{i + 1} - q_i (r_i^{(i + 1, n)})^{\top}
 \]
 Therefore, you now have the optimised version of the modified Gram-Schmidt algorithm, which is not mentioned by the lecturer but you would lose marks if not optimised.
 
@@ -366,8 +366,8 @@ Therefore, you now have the optimised version of the modified Gram-Schmidt algor
     \For{ \(i = 1\) to \(n\)}
       \State \(v_i = a_i\)
       \State \(r_{ii} = \frac{v_i}{\|v_i\|}\)
-      \State \(r_i^{(i + 1, n)} = V_{i + 1}^{T}\bar{q_i}\)
-      \State \(V_{i + 1} = V_{i + 1} - q_i (r_i^{(i + 1, n)})^{T}\)    
+      \State \(r_i^{(i + 1, n)} = V_{i + 1}^{\top}\overline{q_i}\)
+      \State \(V_{i + 1} = V_{i + 1} - \overline{q_i} (r_i^{(i + 1, n)})^{\top}\)    
     \EndFor
     \State \Return \(Q, R\)
   \EndProcedure
@@ -382,11 +382,119 @@ You are now asked to implement the modified Gram-Schmidt algorithm in \href{http
 \noindent \textbf{Remember to check your implementation passes the provided test cases.}
 
 \section{Modified Gram-Schmidt Algorithm with Triangular Orthogonalisation}
-From \autoref{mgs} you should see how modified Gram-Schmidt works iteratively. However, from another perspective, we could consider each iteration \(k\) as a transformation represented by matrix \(R_i\). The transformation \(R_i\)  
+From \autoref{mgs} you should see how modified Gram-Schmidt works iteratively. However, from another perspective, we could consider each iteration \(k\) as a transformation represented by matrix \(R_k\). Let us say $\hat{A}_0 = A$ and $\hat{A}_{k} = \hat{A}_{k - 1}R_k$, the transformation \(R_k\) should satisfy the following criteria:
+\[
+  \hat{A}_0 = \begin{pmatrix} v_{1}^{(0)} & v_{2}^{(0)} & \ldots & v_{n}^{(0)}\end{pmatrix} = A
+\] and 
+\[
+  \hat{A}_{k} = \begin{pmatrix} v_1^{(k)} & v_2^{(k)} & \ldots & v_{n}^{(k)} \end{pmatrix} = \hat{A}_{k - 1}R_{k}
+\] 
+\begin{enumerate}
+  \item The first $k - 1$ columns in $\hat{A}_{k - 1}$ and $\hat{A}_{k}$ should be the same after transformation. i.e. 
+  \[
+    \begin{pmatrix} v_1^{(k - 1)} & \ldots & v_{k - 1}^{(k - 1)} \end{pmatrix} = \begin{pmatrix} v_1^{(k)} & \ldots & v_{k - 1}^{(k)} \end{pmatrix} 
+  \] 
+  \item The $k$-th column in $\hat{A}_{k}$ is the normalised vector of column $k$ in $\hat{A}_{k - 1}$. i.e.
+    \[
+    v_{k}^{(k)} = \frac{v_{k}^{(k - 1)}}{\|v_{k}^{(k - 1)}\|}
+    \] 
+  \item The last $(n - k)$ columns in $\hat{A}_{k}$ is transformed from $\hat{A}_{k - 1}$ where
+    \[
+      v_{i}^{(k)} = v_{i}^{(k - 1)} - r_{ki} \frac{v_k^{(k - 1)}}{\|v_{k}^{(k - 1)}\|} = v_{i}^{(k - 1)} - \frac{r_{ki}}{r_{kk}}v_{k}^{(k - 1)} ~\forall i \in \{k + 1, k + 2, \ldots, n\} 
+    \] 
+    where
+    \[
+      r_{kk} = \|v_{k}^{(k - 1)}\|, r_{ki} = q_k^{*}v_{i}^{(k - 1)} = \frac{(v_k^{(k - 1)})^{*}v_{i}^{(k - 1)}}{\|v_{k}^{(k - 1)}\|}
+    \]  
+\end{enumerate}
+Recall here we use the notation \(v_l^{(r)}\) for demonstrating the updated value of column vector \(v_l\) after iteration \(r\).
+\begin{itemize}
+  \item From the \textbf{Criteria 1} we could see that, when $1 \le  l \le  k - 1$, the $l$-th column vector of $\hat{R}_{k}$ should be the base vector $e_{l}$. i.e. the $r$-th element in vector $e_l$ is represented as the Kronecker delta $\delta_{lr}$.
+  \item From the \textbf{Criteria 2} we could see that the $k$-th column vector of $ \hat{R}_{k}$ should be $\frac{e_k}{r_{kk}}$ in which $e_k$ follows the same definition as above.
+  \item From the  \textbf{Criteria 3} we could see that the last $(n - k)$ columns of $\hat{R}_{k}$ (say the column $i$ is called $r_{k}^{(i)}$) should be in the form
+    \[
+      [r_{k}^{(i)}]_j = \left\{
+        \begin{array}{ccl}
+          1 &~ & $j = i$ \\
+          -\frac{r_{ki}}{r_{kk}} & ~&$j = k$ \\
+          0 & ~&\text{otherwise}
+        \end{array}
+      \right.
+    .\] 
+\end{itemize}
+Therefore, the matrix $\hat{R}_{k}$ should take the form when $k = 2$:
+\[
+  \hat{R}_{k} = \begin{pmatrix}
+  1 & 0 & 0 & \ldots & 0 \\
+  0 & \frac{1}{r_{22}} & -\frac{r_{23}}{r_{22}} & \ldots & -\frac{r_{2n}}{r_{22}} \\
+  0 & 0 & 1 & \ldots & 0 \\
+  \vdots & \ddots & \ddots & \ddots & \vdots \\
+  0 & \ldots & 0 & \ldots & 1
+\end{pmatrix} 
+\]
+i.e. A $n \times n$ identity matrix except row $k$ is filled starting from the diagonal element $r_{kk}$, where the diagonal element is $\frac{1}{r_{kk}}$ and the elements behind the element takes the form $-\frac{r_{ki}}{r_{kk}}$, where $i$ is the column index. In which case
+\[
+  \{-\frac{r_{ki}}{r_{kk}}\} = \begin{pmatrix} 
+    - \frac{r_{k(k + 1)}}{r_{kk}} \\ -\frac{r_{k(k + 1)}}{r_{kk}} \\ \vdots \\ -\frac{r_{kn}}{r_{kk}}
+  \end{pmatrix} = -\frac{1}{\|v_{k}^{(k - 1)}\|}\begin{pmatrix} 
+    (v_k^{(k - 1)})^{*}v_{k + 1}^{(k - 1)} \\
+    (v_k^{(k - 1)})^{*}v_{k + 2}^{(k - 1)} \\
+    \vdots \\
+    (v_k^{(k - 1)})^{*}v_{n}^{(k - 1)}
+  \end{pmatrix} = -\frac{(V_{k + 1}^{(k - 1)})^{\top}\overline{v_k^{(k - 1)}}}{\|v_{k}^{(k - 1)}\|}
+\]
+where \(V_{k + 1}^{(k - 1)} = \begin{pmatrix} 
+  v_{k + 1}^{(k - 1)} & v_{k + 2}^{(k - 1)} & ... & v_{n}^{(k - 1)}
+\end{pmatrix} \). i.e. the last \(n - k\) cols of \(\hat{A}_{k - 1}\).  \medskip
+
+\noindent You should also see that inductively the $\hat{Q}$ obtained from this method takes this form:
+\[
+\hat{Q} = A \hat{R}_1 \hat{R}_2 \ldots \hat{R}_n
+\] 
+And since every $\hat{R}_k$ is essentially an upper triangular matrix, so do their products. We know that the inverse of an upper triangular matrix is still upper triangular, so we could obtain $\hat{R}$ from the inverse of product $\prod_{k=1}^{n}\hat{R}_k$. \medskip
+
+\noindent Also here we are using a series of \textbf{upper triangular} matrices to obtain an orthogonal matrix $\hat{Q}$, and this is the reason we called it \textbf{triangular orthogonalisation}. The algorithm with triangular orthogonalisation in modified Gram-Schmidt is shown below:
+
+\begin{algorithm}[H]
+  \caption{Get \(R_k\) for triangular orthogonalisation in modified GS}
+  \label{mgs-get-r}
+  \begin{algorithmic}[1]
+  \Procedure{GS\_modified\_get\_R}{$\hat{A}_{k - 1}$, $k$} 
+    \State initialise \(\hat{R}_k\)  as an identity matrix
+    \State \(\hat{R}_{k}\)\texttt{[k, k]} \(= \|\hat{A}_{k - 1}\texttt{[:, k]}\|\)
+    \State \(\hat{R}_{k}\)\texttt{[k, k + 1:]} \(=- \frac{\hat{A}_{k - 1}\texttt{[:, k + 1:]}^{\top} \overline{\hat{A}_{k - 1}\texttt{[:, k]}}}{\hat{R}_{k}\texttt{[k, k]}}\)       
+    \State \Return \(\hat{R}_k\)
+  \EndProcedure
+  \end{algorithmic}
+  \end{algorithm}
+\noindent Note that some implementations of this algorithm will not explicitly mention \(\hat{A}_{k - 1}\) as the input parameter, instead the input parameter would be a general matrix \(A\). Keep this in mind and you might need this in exercise. 
+\begin{algorithm}[H]
+  \caption{Modified Gram-Schmidt with Triangular Orthogonalisation}
+  \label{mgs-r}
+  \begin{algorithmic}[1]
+  \Procedure{GS\_modified\_R}{$A$} 
+    \State \texttt{m, n = A.shape}
+    \State initialise \(Q, R\) as \(A\) and an identity matrix
+    \For{ \(k = 1\) to \(n\)}
+      \State \(\hat{R}_k = \)  GS\_MODIFIED\_GET\_R\((A, k)\)
+      \State \(Q = Q \hat{R}_{k}\)
+      \State \(R = R \hat{R}_{k}\)     
+    \EndFor
+    \State \Return \(Q, R\)
+  \EndProcedure
+  \end{algorithmic}
+  \end{algorithm}
+
+  \subsection*{Exercise 2.6: Implement the \texttt{get\_R()} Function Modified GS}
+  \addcontentsline{toc}{subsection}{Exercise 2.6: Implement the \texttt{get\_R()} Function Modified GS}
+  \subsubsection*{Problem Description}%
+  You are now asked to implement the modified Gram-Schmidt algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_modified_get_R}{\texttt{exercises2.GS\_modified\_get\_R}}. You should be able to implement it with reference of \autoref{mgs-get-r}. \medskip
+  
+\noindent \textbf{Remember to check your implementation passes the provided test cases.}
 
 
-% \bigskip
+ \bigskip
 
-% \begin{center}
-%   \textit{\large End of Week 2}
-% \end{center}
+ \begin{center}
+   \textit{\large End of Week 2}
+ \end{center}
