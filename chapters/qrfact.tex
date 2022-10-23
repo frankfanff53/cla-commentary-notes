@@ -377,7 +377,7 @@ Therefore, you now have the optimised version of the modified Gram-Schmidt algor
 \subsection*{Exercise 2.5: Implement the Modified Gram-Schmidt Algorithm}
 \addcontentsline{toc}{subsection}{Exercise 2.5: Implement the Modified Gram-Schmidt Algorithm}
 \subsubsection*{Problem Description}%
-You are now asked to implement the modified Gram-Schmidt algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_modified}{\texttt{exercises2.GS\_modified}}. You should be able to implement it with the minimum amount of loops from reading the optimised algorithm above. \medskip
+You are now asked to implement the modified Gram-Schmidt algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_modified}{\texttt{exercises2.GS\_modified()}}. You should be able to implement it with the minimum amount of loops from reading the optimised algorithm above. \medskip
 
 \noindent \textbf{Remember to check your implementation passes the provided test cases.}
 
@@ -485,10 +485,10 @@ And since every $\hat{R}_k$ is essentially an upper triangular matrix, so do the
   \end{algorithmic}
   \end{algorithm}
 
-  \subsection*{Exercise 2.6: Implement the \texttt{get\_R()} Function Modified GS}
-  \addcontentsline{toc}{subsection}{Exercise 2.6: Implement the \texttt{get\_R()} Function Modified GS}
+  \subsection*{Exercise 2.7: Implement the \texttt{get\_R()} Function Modified GS}
+  \addcontentsline{toc}{subsection}{Exercise 2.7: Implement the \texttt{get\_R()} Function Modified GS}
   \subsubsection*{Problem Description}%
-  You are now asked to implement the modified Gram-Schmidt algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_modified_get_R}{\texttt{exercises2.GS\_modified\_get\_R}}. You should be able to implement it with reference of \autoref{mgs-get-r}. \medskip
+  You are now asked to implement the modified Gram-Schmidt algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises2.GS_modified_get_R}{\texttt{exercises2.GS\_modified\_get\_R()}}. You should be able to implement it with reference of \autoref{mgs-get-r}. \medskip
   
 \noindent \textbf{Remember to check your implementation passes the provided test cases.}
 
@@ -498,3 +498,262 @@ And since every $\hat{R}_k$ is essentially an upper triangular matrix, so do the
  \begin{center}
    \textit{\large End of Week 2}
  \end{center}
+\newpage
+\section{QR Factorisation with Householder Triangulation}
+\subsection*{Before we start}
+\textbf{This part is hard to understand} - I am saying this is because the materials were taught disappointedly when I learned this part. I found it harsh to understand it in one or two days, with the not well-organised materials on the course web page. \medskip
+
+\noindent So I put lots of effort into re-organising the materials and trying to arrange the materials as a learning journey for you to easily understand this part. I am confident my version would be relatively easier to follow, with additional diagrams and explanations. Don't panic if you find this part difficult, I will always be there and we will finally figure out where the problems are.
+
+\subsection*{Contents}
+We have just seen how to use multiple upper triangular matrices $\hat{R}_{k}$ to convert a matrix $A$ to an orthogonal matrix $\hat{Q}$. Similarly, you might be thinking if we could use multiple unitary matrices $\hat{Q}_{k}$ to convert a matrix $A$ to an upper triangular matrix $R$. The answer is yes and the approach behind this idea is \textbf{Householder Triangulation}. \medskip
+
+\noindent Suppose we have a series of \textbf{orthogonal matrices} $\hat{Q}_{k} \in \mathbb{C}^{m \times m}$, what we want to do to convert the matrix $A \in \mathbb{C}^{m \times n}$ to upper triangular $R \in \mathbb{C}^{m \times n}$ is simply
+\[
+\hat{Q}_{m}\hat{Q}_{m - 1}\ldots \hat{Q}_{2}\hat{Q}_1 A= R
+\] 
+and since the product of unitary matrices $\hat{Q}_{k}$ is also unitary, we could set $Q^{*} = \hat{Q}_{m}\hat{Q}_{m - 1}\ldots \hat{Q}_{2}\hat{Q}_{1}$. The answer to $Q \in \mathbb{C}^{m \times m}$ should be straightforward to get. You might also notice that using this approach could help us do \textbf{full QR Factorisation}. This property would let us see lots of applications of QR factorisation using householder triangulation. You can take the diagram below as a reference to the initiative.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{./imgs/householder.png}
+  \caption{An initiative to the Householder Triangulation}
+  \label{fig:householder}
+\end{figure}
+
+\noindent However, how to define \(\hat{Q}_{k}\) is indeed the challenge we are facing. Let's suppose that \(\hat{A}_{k} = \hat{Q}_{k}\hat{A}_{k -1}\). The transformation \(\hat{Q}_{k}\) should satisfy the following basic conditions:
+
+\begin{enumerate}
+  \item To make the final matrix \(R\)  upper triangular, here we want \(\hat{Q}_k\) making the elements below \(k\)-th element in the \(k\)-th column of \(\hat{A}_k\) be 0. 
+  \item Clearly, we don't want \(\hat{Q}_k\) to "pollute" the upper-triangular structure when multiplying with \(\hat{A}_{k -1 }\) to get \(\hat{A}_{k}\). Therefore, we need the first \((k - 1)\) columns in \(\hat{A}_{k}\) and \(\hat{A}_{k - 1}\) be the same.          
+\end{enumerate}
+These two conditions both points to one simple structure of \(\hat{Q}_k\), where
+\[
+  \hat{Q}_{k} = \begin{pmatrix} 
+    I_{k - 1} & 0 \\
+    0 & F_{k} 
+  \end{pmatrix} 
+\]
+The matrix \(I\) refers to the identity matrix but \(F_{k}\) is still unknown. However when you choose an arbitrary vector \(a =  \begin{pmatrix} 
+  a_1 & a_2 & ...a_{k - 1} & a_{k} & a_{m - 1} & a_{m} 
+\end{pmatrix}^{\top} \) and try calculating the value of \(\hat{Q}_{k}a\), you should get
+\[
+  \hat{Q}_{k}a = \begin{pmatrix} 
+    a_1 \\
+    a_2 \\
+    \vdots \\
+    a_{k - 1} \\
+    F_k a_{k:m}
+  \end{pmatrix} 
+\]
+and the value of \(F_{k}a_{k:m}\) should be in the form \(\begin{pmatrix} 
+  b & 0 & ... & 0 
+\end{pmatrix}^{\top} \).
+
+\noindent Here we will use a trick to set \(x = a_{k:m}\) and \(b = \|x\|\), you should see 
+\[
+  \|F_{k}x\| = \sqrt{(\|x\|^2 + 0^2 + ... + 0^2)} = \|x\|
+\] and consequently \(F_kx = \pm \|x\|e_1\). \medskip
+
+\noindent The \(+\) and \(-\) signs here are merely choices for constructing your \(\hat{Q}_{k}\), but the choice will affect the stability and accuracy of the algorithm, we will talk about the choice of signs later. Without the loss of generality, here we take the plus sign first. Now we need to find the exact structure of $F_{k}$, and here is a diagram for the intuition. 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{./imgs/householder-reflector-initial.png}
+  \caption{Finding Householder Reflector $F_k$}
+  \label{fig:householder-reflector-initial}
+\end{figure}
+\noindent Essentially here I am trying to find a reflection between the original vector $x$ and $ \|x\|e_1$ about a hyper-plane $H$. The hyper-plane should bisect the vector between $x$ and $ \|x\|e_1$ into two equal parts. \medskip
+
+\noindent Let us say the two equal vectors could be written in the form $\lambda x$ as shown in the diagram, then we should get the expression of  $F_kx = x - 2\lambda x = (I - 2\lambda)x$ and we could easily get the expression of $F_k = I - 2\lambda$. \medskip
+
+\noindent Here we introduce a vector $v = \|x\|e_1 - x$. From the diagram above we could see the vector $\lambda x$ is the projection of  $x$ along $-v$ \textbf{with an opposite direction}. So we could see that
+ \[
+-\lambda x = \frac{(-v)^{*}x}{\|-v\|} \frac{-v}{\|-v\|} = \frac{v(v^{*}x)}{\|v\|^2} = \frac{vv^{*}}{v^{*}v}x
+\]
+Therefore we could get $-\lambda = \frac{vv^{*}}{v^{*}v}$, and the vector $F_kx$ is in the form
+\[
+F_kx = (I - 2\lambda)x = (I - 2\frac{vv^{*}}{v^{*}v}) x \implies F_k = I - 2\frac{vv^{*}}{v^{*}v}
+\] 
+and the detailed graphical explanation goes as follows in \autoref{fig:householder-reflector-complete}:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{./imgs/householder-reflector-complete.png}
+  \caption{Householder Reflector Explanation}
+  \label{fig:householder-reflector-complete}
+\end{figure}
+\noindent The construction of $\hat{Q}_k$ has been completed with the general structure
+\[
+  \hat{Q}_k = \begin{pmatrix} I_{k - 1} & 0 \\ 0 & I - 2\frac{vv^{*}}{v^{*}v} \end{pmatrix} 
+\]
+The expression is the same when taking the negative sign when setting the value of $F_kx$, in the sense that \(x\)  is projected onto the negative axis (for the case in the diagram). You can check if \(\hat{Q}_{k}\) is unitary by yourself. \medskip
+
+\noindent However, the fact above doesn't mean we could randomly choose the $+/-$ sign in  $F_kx = \pm \|x\|e_1$ and \(v = \pm \|x\|e_1 - x\)  for algorithm implementation. \textbf{We need to take the \(F_kx\) away from the original \(x\) as far as possible.} The choice of v should be
+\[
+  v = sign(x_1)\|x\|e_1 + x
+\]   
+\textbf{This doesn't seem to make any sense at all.} At least this is what I was thinking when I first looked at this expression. Let me demonstrate the term "as far as possible" and the choice of \(v\)  a little bit:
+\begin{itemize}
+  \item Note that in the example above, we are projecting vector $x$ to \textbf{the direction that the $+/-$ sign  $x_1$ belongs to.}
+  \item That is to say, assuming the first element in $x$ is positive, we are projecting x to the positive direction along the $e_1$ axis, which is the same as we do in \autoref{fig:householder-reflector-initial}, and vice versa.
+  \item However this is not a good practice. Let us consider the case that the original vector $x$ is close to the $e_1$ axis and $ \|x\|$ is large. 
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=0.7\textwidth]{./imgs/householder-reflector-extreme-case.png}
+      \caption{Extreme case when $x$ is close to the $e_1$ axis}
+      \label{fig:householder-reflector-extreme-case}
+    \end{figure}
+  \item In our previous approach we try to obtain $v$ via the difference between $x$ and $sign(x_1)\|x\|e_1$, so in this case, \textbf{the entries in $v$ will be generally small, especially the first entry.}
+  \item So here we encounter the case that "two big things give out a small thing" - which is not preferable in computation. The reason is that the small entries in $v$ will trigger the rounding error by inexact arithmetic running on the computer, and \textbf{when $v$ is multiplied by a "big" $x$ the error in the result will be even larger.}
+  \item Indeed this situation will lead to the instability of the algorithm, so we cannot project \(x\) to the direction that the $+/-$ sign  $x_1$ belongs to. Therefore, we \textbf{choose the vector further away from the original \(x\),} which is \(-sign(x_1)\|x\|e_1\).
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./imgs/householder-reflector-proper.png}
+    \caption{Proper Householder Reflector Construction}
+    \label{fig:householder-reflector-proper}
+  \end{figure}
+  \item Therefore, we update the expression of $v$ due to our different choice of projected vector $F_kx$ by  $v = sign(x_1)\|x\|e_1 + x$, and the expression of \(F_k\) we derived earlier still holds. \autoref{fig:householder-reflector-proper} should be self-intuitive to demonstrate the derivation of $v$ properly.
+  \item Note that we have \(sign(0) = 1\)  by convention, and for any \(a \in \mathbb{C}\), \(sign(a) = \frac{a}{|a|}\). You are not encouraged to use \texttt{np.sign()} for implementation, since \texttt{np.sign(0)}\(=0\) and \texttt{np.sign(a)} \(=\frac{a}{Re(a)} \forall a \in \mathbb{C}\).     
+\end{itemize}
+Now we should have all the background knowledge for householder triangulation. We will not rush to implement QR factorisation with the householder but look at a simple example to "in-place-ly" convert \textbf{the first \(k\)  columns} of a general matrix \(A\) to upper-triangular.
+
+\begin{algorithm}[H]
+  \caption{Householder Triangulation}
+  \label{alg:householder}
+  \begin{algorithmic}[1]
+  \Procedure{Householder}{$A$, $k$=None}
+  \State $m, n = A$.shape
+  \If{$k$ is None}
+    \State $k = n$  \Comment{By default we make the whole $A$ upper triangular}
+  \EndIf
+     \For{ \(i = 1\) to \(k\)}
+         \State $x = A$\texttt{[i:, i]}
+         \State $e_1 = $ zeros$(len(v))$
+         \State $e_1$\texttt{[0]} $= 1$ \Comment{Construct $e_1$ for each iteration}
+         \State $v = sign(x_1)\|x\|e_1 + x$
+         \State $A$\texttt{[i:, i:]}$ = (I - 2\frac{vv^{*}}{v^{*}v})A\texttt{[i:, i:]}$
+     \EndFor
+    \State \Return \(A\) 
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+\noindent Note that in \autoref{alg:householder} we are computing the value of $\hat{Q}_{k}\hat{Q}_{k-1}\ldots \hat{Q}_2 \hat{Q}_1A$, but we didn't actually multiply the whole $\hat{Q}_i$ to $A$ in the algorithm as proposed earlier. We multiply the constructed $F = I - 2\frac{vv^{*}}{v^{*}v}$ to the sub-matrix $A$\texttt{[i:, i:]} instead. \medskip
+
+\noindent Obviously, these two operations do the same job and using $F$ is more memory-efficient since we don't need extra spaces for storing 0 and 1 in the identity matrix and zero parts of $\hat{Q}_{i}$.
+\subsection*{Exercise 2.8: Implement the Householder Triangulation Algorithm}
+\addcontentsline{toc}{subsection}{Exercise 2.8: Implement the Householder Triangulation Algorithm}
+\subsubsection*{Problem Description}%
+You are now asked to implement the householder triangulation algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises3.householder}{\texttt{exercises3.householder()}}, to make the first \(k\)  columns in matrix \(A\)  upper-triangular and return the resulted matrix. You should be able to implement it with reference of \autoref{alg:householder}. \medskip
+
+\noindent \textbf{Remember to check your implementation passes the provided test cases.} \medskip
+
+\noindent We can use the algorithm above to perform QR factorization.
+\begin{algorithm}[H]
+  \caption{QR Factorisation with Householder Triangulation}
+  \label{alg:householder-qr}
+  \begin{algorithmic}[1]
+  \Procedure{Householder\_qr}{$A$}
+  \State $m, n = A$.shape
+  \State \(A_{aug} = (A|I_m)\)  
+  \State \(A_{aug}^{'} = \) HOUSEHOLDER\((A_{aug}, n)\)  
+  \State \(R, Q^{*} = A_{aug}^{'}\texttt{[:, :n]}, A_{aug}^{'}\texttt{[:, n:]}\)  
+  \State \(Q = (Q^{*})^{*}\)  
+    \State \Return \(Q, R\) 
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+\noindent The reason \autoref{alg:householder-qr} works is based on the fact that, function \texttt{HOUSEHOLDER(A, k)} returns the value of \(Q^{*}A\), where \(Q^{*} = \hat{Q}_{k}\hat{Q}_{k - 1}\dots \hat{Q}_{2}\hat{Q}_{1} \in \mathbb{C}^{m\times m}\)  . Furthermore, we could see given that \(D = (B | C)\) is an augmented matrix, where \(B \in \mathbb{C}^{m\times n}, C \in \mathbb{C}^{m\times m}\). Then the result returned by \texttt{HOUSEHOLDER(D, n)} is essentially \((Q^{*}B | Q^{*}C)\), and \(Q^{*}B\) is indeed upper triangular.  \medskip
+
+\noindent Therefore, if we set \(B = A, C = I_{m}\) the case is exactly matched with \autoref{alg:householder-qr}, and the result after householder triangulation would be \((Q^{*}A|Q^{*})\). Since \(R = Q^{*}A\) we have mentioned earlier, now we should have \(R\)  and \(Q^{*}\) in our resulted augmented matrix, and we could easily find values \(Q, R\).
+
+\subsection*{Exercise 2.11: QR Factorisation with Householder Triangulation}
+\addcontentsline{toc}{subsection}{Exercise 2.11: QR Factorisation with Householder}
+\subsubsection*{Problem Description}%
+You are now asked to implement the householder triangulation algorithm in \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises3.householder_qr}{\texttt{exercises3.householder\_qr()}}, to return matrices \(Q, R\)  such that \(A = QR\) with householder triangulation. You should be able to implement it with reference of \autoref{alg:householder-qr}. \medskip
+
+\noindent \textbf{Remember to check your implementation passes the provided test cases.} \newpage
+
+\noindent From the exercise above we can learn by analogy to apply householder triangulation to other problems. Say we want to solve a linear system where \(Ax = b, A \in  \mathbb{C}^{m \times  m}, b \in \mathbb{C}^{m}\). \textbf{Note here the RHS is not limited to be a vector,} it could also be a matrix \(\in \mathbb{C}^{m \times k}\). The logic for solving such systems will be the same, except in the matrix case our $x$ is a matrix as well. \medskip
+
+\noindent In this case we could take the same technique in \autoref{alg:householder-qr} to apply \texttt{householder()} on the augmented matrix $(A | b)$ to get the resulted matrix $(R := Q^{*}A | Q^{*}b)$. Now we have re-formulated the equation to $Rx = Q^{*}b = y$, where $R$ is an upper triangular matrix and how to solve such equations computationally is the challenge we need to face now. \medskip
+
+\noindent Now we should have \(R \in \mathbb{C}^{m \times m}\) and \(y \in \mathbb{C}^{m \times  m}\), after expanding the equation $Rx = y$ we will find
+\[
+\left\{
+  \begin{array}{rcl}
+    r_{11}x_1 + r_{12}x_2 + \ldots + r_{1(m - 1)}x_{m - 1} + r_{1m}x_{m} & = & y_1 \\
+    0x_1 + r_{22}x_2 + \ldots + r_{2(m - 1)}x_{m - 1} + r_{2m}x_m & = & y_2 \\
+     & \vdots &  \\
+    0x_1 + 0x_2 + \ldots + r_{(m - 1)(m - 1)}x_{m - 1} + r_{(m - 1)m}x_{m} & = & y_{m - 1} \\
+    0x_1 + 0x_2 + \ldots + 0x_{m - 1} + r_{mm}x_{m} & = & y_{m}
+  \end{array}
+\right.
+\]
+And we could solve this system of linear equations "backwards", starting from the last equation $r_{mm}x_{m} = y_{m}$. Clearly the solution is $x_{m} = \frac{y_{m}}{r_{mm}}$. We now could substitute the value of $x_{m}$ into the previous equation $r_{(m - 1)(m - 1)}x_{m - 1} + r_{(m - 1)m}x_{m} = y_{m - 1}$, to get the value of $x_{m - 1}$. We could use this strategy and go above and above to get all values of $x_{i}, x_{i - 1}, \ldots, x_{2}, x_1$. \medskip
+
+\noindent We call this procedure \textbf{back substitution}, and in general given that we have $x_{i + 1}, x_{i + 2}, \ldots, x_{m - 1}, x_{m}$, we could obtain $x_{i}$ via
+\[
+x_{i} = \frac{y_{i} - \sum_{k=i + 1}^{m} r_{ik}x_{k}}{r_{ii}} = \frac{y_{i} - (r_{i}^{(i + 1)})^{\top} x^{(i + 1)}}{r_{ii}}
+\] 
+where $r_{i}^{(i + 1)} = \begin{pmatrix} r_{i(i + 1)} & r_{i(i + 2)} & \ldots & r_{i(m - 1)} & r_{im} \end{pmatrix} ^{\top}$ 
+
+\noindent and $x^{(i + 1)} = \begin{pmatrix} x_{i + 1} & x_{i + 2} & \ldots & x_{m - 1} && x_{m} \end{pmatrix}^{\top} $. \medskip
+
+\noindent And the back substitution algorithm is implemented in this way:
+
+\begin{algorithm}[H]
+  \caption{Back Substitution Algorithm for solving \(Rx = y\), special case}
+  \label{alg:back-sub-special}
+  \begin{algorithmic}[1]
+  \Procedure{solve\_U}{$R, y$}
+  \State $m, n = R$.shape
+  \State Initialise \(x\) as a length-\(m\) vector  
+  \For {\(i = m\) to \(1\)}
+    \State \(x_{i} = \frac{y_i - (r_i^{(i + 1)})^{\top}x^{(i + 1)}}{r_{ii}}\)  
+  \EndFor
+    \State \Return \(x\) 
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+\subsection*{Exercise 2.9-10: Solving Systems of Linear Equations}
+\addcontentsline{toc}{subsection}{Exercise 2.9-10: Solving Systems of Linear Equations}
+\subsubsection*{Problem Description}%
+You are now asked to implement the algorithms to solve linear systems
+\begin{itemize}
+  \item \(Rx = y\)  where \(R \in \mathbb{C}^{m \times m}\), \(R\)  upper triangular, \(y \in \mathbb{C}^{m}\)     
+  \item \(AX = B\), where \(A \in \mathbb{C}^{m \times m}, b \in \mathbb{C}^{m \times k}\), and the column vectors \(x_i\) in \(X\) should satisfy \(A x_i = b_i\).
+\end{itemize}
+using householder triangulation for \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises3.solve_U}{\texttt{exercises3.solve\_U()}} and 
+
+\noindent \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises3.householder_solve}{\texttt{exercises3.householder\_solve()}}. You should be able to implement it with reference of the knowledge on the previous page and \autoref{alg:back-sub-special}. \medskip
+
+\noindent \textbf{Remember to check your implementation passes the provided test cases.} \medskip
+
+\noindent After introducing the examples above, here is another application of QR factorisation called \textbf{the least square problem.} The problem states that given \(Ax = b, A \in \mathbb{C}^{m \times n}, b \in \mathbb{C}^{n}\) and generally \(m \geq n\). We want to find vector \(x\) which minimises the error function \(\|Ax - b\|^2 = (Ax - b)^{*}(Ax - b)\). \medskip
+
+\noindent That is to say, we are dealing with an over-determined linear system such that we cannot directly find the solution by solving \(Ax = b\). \medskip
+
+\noindent Essentially the minimiser $\overline{x}$ is found by solving the equation $\hat{R}x = \hat{Q}b$ where \(\hat{Q}, \hat{R}\) are coming from the \textbf{reduced QR factorisation} of \(A\). \medskip
+
+\noindent We can still apply the technique to reduce the original equation to an upper-triangular linear system $Rx = y$, where $R \in \mathbb{C}^{m\times n}, x \in \mathbb{C}^{n}$ and $y \in \mathbb{C}^{m}$. The strategy we want to use here is to reduce the matrix $R$ to a square matrix by truncating rows in matrix \(R\)  and the elements in \(y\)  to make \(y\)   length-\(n\) long. You might find using slices in python is helpful for your implementations, i.e. set \(\hat{R} = R\)\texttt{[:n, :n]} and \(\hat{y} = y\)\texttt{[:n]}.
+
+
+\subsection*{Exercise 2.12: Solving the Least Square Problem}
+\addcontentsline{toc}{subsection}{Exercise 2.12: Solving the Least Square Problem}
+\subsubsection*{Problem Description}%
+You are now asked to implement the algorithm to solve the least square problem $\min \|Ax - b\|^2$
+using householder triangulation for 
+
+\noindent \href{https://comp-lin-alg.github.io/cla_utils.html#cla_utils.exercises3.householder_ls}{\texttt{exercises3.householder\_ls()}}. You should be able to implement it with reference of the knowledge above, \texttt{householder\_solve()} and \autoref{alg:back-sub-special}. \medskip
+
+\noindent \textbf{Remember to check your implementation passes the provided test cases.} \newpage
+
+\noindent Thank you for finishing the reading and reaching this part. One-third of your journey in the course has been completed. Congratulations! \medskip
+
+\noindent Next week you will be facing the first assessed coursework, make sure you manage your time wisely and do ask me questions immediately if you are stuck with one question longer than 1 hour. I will also try my best to provide some sample questions for you to get familiar with the style of coursework questions. \medskip
+
+\noindent Also, \textbf{do make sure you have committed your coding exercises to GitHub} before the coursework deadline, otherwise you will \textbf{lose 35\% of your mark in the first coursework}. Good luck!
+
+\begin{center}
+  \textit{\large End of Week 3}\\
+  \medskip
+  \textit{\large End of Chapter 2}
+\end{center}
